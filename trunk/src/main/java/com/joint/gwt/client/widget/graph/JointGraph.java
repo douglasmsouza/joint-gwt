@@ -10,6 +10,11 @@ import com.joint.gwt.client.widget.graph.member.JointMemberOptions;
 import com.joint.gwt.client.widget.graph.paper.JointPaperListener;
 import com.joint.gwt.client.widget.graph.paper.JointPaperOptions;
 
+/**
+ * A implementation of joint.dia.Graph of JointJS library
+ * 
+ * @author Douglas Matheus de Souza em 01/10/2014
+ */
 public class JointGraph extends Composite {
 
 	private Element graphElement;
