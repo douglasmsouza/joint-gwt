@@ -1,21 +1,21 @@
 package com.joint.gwt.client.widget.graph.member;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import com.joint.gwt.client.ui.JointElement;
 
-public class JointMember extends JavaScriptObject {
+public final class JointMember extends JointElement {
 
-	public static final native JointMember createMember(JointMemberOptions options)/*-{
+	public static native JointMember createMember(JointMemberOptions options)/*-{
 		return new $wnd.joint.shapes.org.Member({
 			attrs : {
 				'.card' : {
-					fill : options["fillColor"],
-					stroke : options["strokeColor"]
+					fill : options.fillColor,
+					stroke : options.strokeColor
 				},
 				'.rank' : {
-					text : options["rank"]
+					text : options.rank
 				},
 				'.name' : {
-					text : options["name"]
+					text : options.name
 				}
 			}
 		});
@@ -23,5 +23,21 @@ public class JointMember extends JavaScriptObject {
 
 	protected JointMember() {
 	}
+
+	public void setId(int id) {
+		super.setProp("id", id);
+	}
+
+	public int getId() {
+		return super.getPropInt("id");
+	}
+
+	public String getName() {
+		return super.getAttrString(".name/text");
+	};
+
+	public String getRank() {
+		return super.getAttrString(".rank/text");
+	};
 
 }

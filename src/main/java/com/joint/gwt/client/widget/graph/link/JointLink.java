@@ -5,9 +5,6 @@ import com.google.gwt.dom.client.Element;
 
 public class JointLink {
 
-	protected JointLink() {
-	}
-
 	public static final native JavaScriptObject createLink(Element source, Element target)/*-{
 		return new $wnd.joint.shapes.org.Arrow({
 			source : {

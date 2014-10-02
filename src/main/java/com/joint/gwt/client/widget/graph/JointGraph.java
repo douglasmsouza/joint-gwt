@@ -7,7 +7,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.joint.gwt.client.widget.graph.member.JointMember;
 import com.joint.gwt.client.widget.graph.member.JointMemberListener;
-import com.joint.gwt.client.widget.graph.member.JointMemberOptions;
 import com.joint.gwt.client.widget.graph.paper.JointPaperOptions;
 
 /**
@@ -19,12 +18,12 @@ public class JointGraph extends Composite {
 
 	private Element graphElement;
 
-	public JointGraph(final JointPaperOptions paperOptions, final JointMemberOptions rootMemberOptions, final JointMemberListener memberListener) {
+	public JointGraph(final JointPaperOptions paperOptions, final JointMember rootMember, final JointMemberListener memberListener) {
 		initWidget(new HTML());
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			public void execute() {
-				initGraphElement(getElement().getId(), paperOptions, rootMemberOptions, memberListener);
+				initGraphElement(getElement().getId(), paperOptions, rootMember, memberListener);
 			}
 		});
 	}
@@ -35,10 +34,11 @@ public class JointGraph extends Composite {
 	 * 
 	 * @param containerId DOM id of the graph container
 	 * @param paperOptions options to create the graph's viewport
+	 * @param rootMember the root member of the graph
 	 * @param memberListener <b>null</b> you don't want to handle events
 	 * @author Douglas Matheus de Souza
 	 */
-	private native void initGraphElement(String containerId, JointPaperOptions paperOptions, JointMemberOptions rootMemberOptions,
+	private native void initGraphElement(String containerId, JointPaperOptions paperOptions, JointMember rootMember,
 			JointMemberListener memberListener)/*-{
 		var graph = new $wnd.joint.dia.Graph;
 		this.@com.joint.gwt.client.widget.graph.JointGraph::graphElement = graph;
@@ -49,6 +49,10 @@ public class JointGraph extends Composite {
 		var paper = new $wnd.joint.dia.Paper(paperOptions);
 		var graphInstance = this.@com.joint.gwt.client.widget.graph.JointGraph::getInstance()();
 		if (memberListener != null) {
+			function isMember(el){
+				return el instanceof $wnd.joint.shapes.org.Member;
+			}
+			//
 			paper.on('cell:pointerdown',function(cellView, evt, x, y) {
 				if(isMember(cellView.model)){
 					memberListener.@com.joint.gwt.client.widget.graph.member.JointMemberListener::onPointerDown(Lcom/joint/gwt/client/widget/graph/JointGraph;Lcom/joint/gwt/client/widget/graph/member/JointMember;II)(graphInstance, cellView.model, x, y);
@@ -76,30 +80,19 @@ public class JointGraph extends Composite {
 			});
 		}
 		//
-		this.@com.joint.gwt.client.widget.graph.JointGraph::addMember(Lcom/joint/gwt/client/widget/graph/member/JointMemberOptions;Lcom/joint/gwt/client/widget/graph/member/JointMember;)(rootMemberOptions, null);
-	}-*/;
-
-	/**
-	 * Return <b>true</b> if an element is an instanceof
-	 * <b>joint.shaped.org.Member</b>
-	 * 
-	 * @author Douglas Matheus de Souza em 02/10/2014
-	 */
-	private native void isMember(Element el)/*-{
-		return el instanceof $wnd.joint.shapes.org.Member;
+		this.@com.joint.gwt.client.widget.graph.JointGraph::addMember(Lcom/joint/gwt/client/widget/graph/member/JointMember;Lcom/joint/gwt/client/widget/graph/member/JointMember;)(rootMember, null);
 	}-*/;
 
 	/**
 	 * Add a new member to the graph
 	 * 
-	 * @param memberOptions new member options
+	 * @param newMember the new member
 	 * @param parentMember parent member to link
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public native void addMember(JointMemberOptions memberOptions, JointMember parentMember)/*-{
+	public native void addMember(JointMember newMember, JointMember parentMember)/*-{
 		var graph = this.@com.joint.gwt.client.widget.graph.JointGraph::graphElement;
-		var newMember = @com.joint.gwt.client.widget.graph.member.JointMember::createMember(Lcom/joint/gwt/client/widget/graph/member/JointMemberOptions;)(memberOptions);
 		graph.addCell(newMember);
 		//
 		if (parentMember != null) {
