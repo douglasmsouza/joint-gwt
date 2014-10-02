@@ -8,8 +8,8 @@ public class JointMember extends JavaScriptObject {
 		return new $wnd.joint.shapes.org.Member({
 			attrs : {
 				'.card' : {
-					fill : "#F1C40F",
-					stroke : "gray"
+					fill : options["fillColor"],
+					stroke : options["strokeColor"]
 				},
 				'.rank' : {
 					text : options["rank"]
