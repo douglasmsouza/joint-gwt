@@ -1,5 +1,6 @@
 package com.joint.gwt.client.widget.graph;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
@@ -16,8 +17,8 @@ import com.joint.gwt.client.widget.graph.paper.JointPaperOptions;
  */
 public class JointGraph extends Composite {
 
-	private Element graphElement;
-	private Element paperElement;
+	private JavaScriptObject graphJS;
+	private JavaScriptObject paperJS;
 
 	public JointGraph(final JointPaperOptions paperOptions) {
 		this(paperOptions, null);
@@ -43,14 +44,14 @@ public class JointGraph extends Composite {
 	 * @author Douglas Matheus de Souza
 	 */
 	private native void initGraphElement(String containerId, JointPaperOptions paperOptions, JointMember rootMember)/*-{
-		var graph = new $wnd.joint.dia.Graph;
-		this.@com.joint.gwt.client.widget.graph.JointGraph::graphElement = graph;
+		graph = new $wnd.joint.dia.Graph;
+		this.@com.joint.gwt.client.widget.graph.JointGraph::graphJS = graph;
 		//
 		paperOptions["model"] = graph;
 		paperOptions["el"] = $doc.getElementById(containerId);
 		//
-		var paper = new $wnd.joint.dia.Paper(paperOptions);
-		this.@com.joint.gwt.client.widget.graph.JointGraph::paperElement = paper;
+		this.@com.joint.gwt.client.widget.graph.JointGraph::paperJS = new $wnd.joint.dia.Paper(paperOptions);
+		console.log(this.@com.joint.gwt.client.widget.graph.JointGraph::paperJS);
 		//
 		if (rootMember != null) {
 			this.@com.joint.gwt.client.widget.graph.JointGraph::addMember(Lcom/joint/gwt/client/widget/graph/member/JointMember;Lcom/joint/gwt/client/widget/graph/member/JointMember;)(rootMember, null);
@@ -69,8 +70,9 @@ public class JointGraph extends Composite {
 			return el instanceof $wnd.joint.shapes.org.Member;
 		}
 		//
-		var graphInstance = this.@com.joint.gwt.client.widget.graph.JointGraph::getInstance()();
-		var paper = this.@com.joint.gwt.client.widget.graph.JointGraph::paperElement; 
+		graphInstance = this.@com.joint.gwt.client.widget.graph.JointGraph::getInstance()();
+		paper = this.@com.joint.gwt.client.widget.graph.JointGraph::paperJS; 
+		console.log(paper);
 		//
 		paper.on('cell:pointerdown',function(cellView, evt, x, y) {
 			if (isMember(cellView.model)) {
@@ -108,11 +110,11 @@ public class JointGraph extends Composite {
 	 * @author Douglas Matheus de Souza
 	 */
 	public native void addMember(JointMember newMember, JointMember parentMember)/*-{
-		var graph = this.@com.joint.gwt.client.widget.graph.JointGraph::graphElement;
+		graph = this.@com.joint.gwt.client.widget.graph.JointGraph::graphJS;
 		graph.addCell(newMember);
 		//
 		if (parentMember != null) {
-			var link = @com.joint.gwt.client.widget.graph.link.JointLink::createLink(Lcom/google/gwt/dom/client/Element;Lcom/google/gwt/dom/client/Element;)(parentMember, newMember)
+			link = @com.joint.gwt.client.widget.graph.link.JointLink::createLink(Lcom/google/gwt/dom/client/Element;Lcom/google/gwt/dom/client/Element;)(parentMember, newMember)
 			graph.addCell(link);
 		}
 		//
@@ -125,7 +127,7 @@ public class JointGraph extends Composite {
 	 * @author Douglas Matheus de Souza
 	 */
 	private native Element redraw()/*-{
-		var graph = this.@com.joint.gwt.client.widget.graph.JointGraph::graphElement;
+		graph = this.@com.joint.gwt.client.widget.graph.JointGraph::graphJS;
 		$wnd.joint.layout.DirectedGraph.layout(graph, {
 			setLinkVertices : true,
 			nodeSep : 50,
@@ -140,7 +142,7 @@ public class JointGraph extends Composite {
 	 * @author Douglas Matheus de Souza
 	 */
 	public final native void clear()/*-{
-		var graph = this.@com.joint.gwt.client.widget.graph.JointGraph::graphElement;
+		graph = this.@com.joint.gwt.client.widget.graph.JointGraph::graphJS;
 		graph.clear();
 	}-*/;
 
