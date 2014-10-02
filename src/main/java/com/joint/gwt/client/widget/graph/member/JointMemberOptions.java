@@ -27,4 +27,12 @@ public final class JointMemberOptions extends JavaScriptObject {
 		this.strokeColor = strokeColor;
 	}-*/;
 
+	public native void setNameFontSize(int fontSize)/*-{
+		this.nameFontSize = fontSize
+	}-*/;
+
+	public native void setRankFontSize(int fontSize)/*-{
+		this.rankFontSize = fontSize
+	}-*/;
+
 }

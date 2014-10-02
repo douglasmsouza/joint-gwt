@@ -12,10 +12,12 @@ public final class JointMember extends JointElement {
 					stroke : options.strokeColor
 				},
 				'.rank' : {
-					text : options.rank
+					text : options.rank,
+					'font-size' : options.rankFontSize
 				},
 				'.name' : {
-					text : options.name
+					text : options.name,
+					'font-size' : options.nameFontSize
 				}
 			}
 		});
@@ -39,5 +41,13 @@ public final class JointMember extends JointElement {
 	public String getRank() {
 		return super.getAttrString(".rank/text");
 	};
+
+	public void setFillColor(String color) {
+		super.setAttr(".card/fill", color);
+	}
+
+	public void setStrokeColor(String color) {
+		super.setAttr(".card/stroke", color);
+	}
 
 }
