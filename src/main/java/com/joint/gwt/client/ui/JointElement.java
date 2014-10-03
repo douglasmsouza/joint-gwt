@@ -2,7 +2,7 @@ package com.joint.gwt.client.ui;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayInteger;
-import com.joint.gwt.client.widget.graph.member.JointMember;
+import com.joint.gwt.client.ui.graph.member.JointMember;
 
 /**
  * The base JointJS element
