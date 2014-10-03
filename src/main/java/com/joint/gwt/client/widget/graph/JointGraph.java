@@ -6,6 +6,7 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsRenderable;
 import com.joint.gwt.client.widget.graph.member.JointMember;
 import com.joint.gwt.client.widget.graph.member.JointMemberListener;
 import com.joint.gwt.client.widget.graph.paper.JointPaperOptions;
@@ -29,7 +30,7 @@ public class JointGraph extends Composite {
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			public void execute() {
-				initGraphElement(getElement().getId(), paperOptions, rootMember);
+				initGraphJS(getElement().getId(), paperOptions, rootMember);
 			}
 		});
 	}
@@ -43,7 +44,7 @@ public class JointGraph extends Composite {
 	 * @param rootMember the root member of the graph
 	 * @author Douglas Matheus de Souza
 	 */
-	private native void initGraphElement(String containerId, JointPaperOptions paperOptions, JointMember rootMember)/*-{
+	private native void initGraphJS(String containerId, JointPaperOptions paperOptions, JointMember rootMember)/*-{
 		graph = new $wnd.joint.dia.Graph;
 		this.@com.joint.gwt.client.widget.graph.JointGraph::graphJS = graph;
 		//
@@ -65,40 +66,73 @@ public class JointGraph extends Composite {
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public final native void addListener(JointMemberListener listener)/*-{
+	public void addListener(final JointMemberListener listener) {
+		if (isAttached()) {
+			addListenerRendered(listener);
+		} else {
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+				public void execute() {
+					addListenerRendered(listener);
+				}
+			});
+		}
+	}
+
+	/**
+	 * Add a listener to the graph
+	 * 
+	 * @param listener
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	private final native void addListenerRendered(JointMemberListener listener)/*-{
 		function isMember(el) {
 			return el instanceof $wnd.joint.shapes.org.Member;
 		}
 		//
 		graphInstance = this.@com.joint.gwt.client.widget.graph.JointGraph::getInstance()();
-		paper = this.@com.joint.gwt.client.widget.graph.JointGraph::paperJS; 
-		console.log(paper);
+		paper = this.@com.joint.gwt.client.widget.graph.JointGraph::paperJS;
 		//
-		paper.on('cell:pointerdown',function(cellView, evt, x, y) {
-			if (isMember(cellView.model)) {
-				listener.@com.joint.gwt.client.widget.graph.member.JointMemberListener::onPointerDown(Lcom/joint/gwt/client/widget/graph/JointGraph;Lcom/joint/gwt/client/widget/graph/member/JointMember;II)(graphInstance, cellView.model, x, y);
-			}
-		});
-		paper.on('cell:pointermove',function(cellView, evt, x, y) {
-			if (isMember(cellView.model)) {
-				listener.@com.joint.gwt.client.widget.graph.member.JointMemberListener::onPointerMove(Lcom/joint/gwt/client/widget/graph/JointGraph;Lcom/joint/gwt/client/widget/graph/member/JointMember;II)(graphInstance, cellView.model, x, y);
-			}
-		});
-		paper.on('cell:pointerup',function(cellView, evt) {
-			if (isMember(cellView.model)) {
-				listener.@com.joint.gwt.client.widget.graph.member.JointMemberListener::onPointerUp(Lcom/joint/gwt/client/widget/graph/JointGraph;Lcom/joint/gwt/client/widget/graph/member/JointMember;)(graphInstance, cellView.model);
-			}
-		});
-		paper.on('cell:pointerdblclick',function(cellView, evt, x, y) {
-			if (isMember(cellView.model)) {
-				listener.@com.joint.gwt.client.widget.graph.member.JointMemberListener::onDblClick(Lcom/joint/gwt/client/widget/graph/JointGraph;Lcom/joint/gwt/client/widget/graph/member/JointMember;II)(graphInstance, cellView.model, x, y);
-			}
-		});
-		paper.on('cell:pointerclick',function(cellView, evt, x, y) {
-			if (isMember(cellView.model)) {
-				listener.@com.joint.gwt.client.widget.graph.member.JointMemberListener::onClick(Lcom/joint/gwt/client/widget/graph/JointGraph;Lcom/joint/gwt/client/widget/graph/member/JointMember;II)(graphInstance, cellView.model, x, y);
-			}
-		});
+		paper
+				.on(
+						'cell:pointerdown',
+						function(cellView, evt, x, y) {
+							if (isMember(cellView.model)) {
+								listener.@com.joint.gwt.client.widget.graph.member.JointMemberListener::onPointerDown(Lcom/joint/gwt/client/widget/graph/JointGraph;Lcom/joint/gwt/client/widget/graph/member/JointMember;II)(graphInstance, cellView.model, x, y);
+							}
+						});
+		paper
+				.on(
+						'cell:pointermove',
+						function(cellView, evt, x, y) {
+							if (isMember(cellView.model)) {
+								listener.@com.joint.gwt.client.widget.graph.member.JointMemberListener::onPointerMove(Lcom/joint/gwt/client/widget/graph/JointGraph;Lcom/joint/gwt/client/widget/graph/member/JointMember;II)(graphInstance, cellView.model, x, y);
+							}
+						});
+		paper
+				.on(
+						'cell:pointerup',
+						function(cellView, evt) {
+							if (isMember(cellView.model)) {
+								listener.@com.joint.gwt.client.widget.graph.member.JointMemberListener::onPointerUp(Lcom/joint/gwt/client/widget/graph/JointGraph;Lcom/joint/gwt/client/widget/graph/member/JointMember;)(graphInstance, cellView.model);
+							}
+						});
+		paper
+				.on(
+						'cell:pointerdblclick',
+						function(cellView, evt, x, y) {
+							if (isMember(cellView.model)) {
+								listener.@com.joint.gwt.client.widget.graph.member.JointMemberListener::onDblClick(Lcom/joint/gwt/client/widget/graph/JointGraph;Lcom/joint/gwt/client/widget/graph/member/JointMember;II)(graphInstance, cellView.model, x, y);
+							}
+						});
+		paper
+				.on(
+						'cell:pointerclick',
+						function(cellView, evt, x, y) {
+							if (isMember(cellView.model)) {
+								listener.@com.joint.gwt.client.widget.graph.member.JointMemberListener::onClick(Lcom/joint/gwt/client/widget/graph/JointGraph;Lcom/joint/gwt/client/widget/graph/member/JointMember;II)(graphInstance, cellView.model, x, y);
+							}
+						});
 	}-*/;
 
 	/**
@@ -149,4 +183,7 @@ public class JointGraph extends Composite {
 	private JointGraph getInstance() {
 		return this;
 	}
+
+
+
 }
