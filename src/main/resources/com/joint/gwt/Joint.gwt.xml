@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
-	<inherits name='com.google.gwt.user.User' />
-	<source path='client' />
+	<inherits name="com.google.gwt.user.User" />
+	<source path="client" />
+	<stylesheet src="resources/css/joint.css" />
+	<script src="resources/js/joint.min.js" />
+	<script src="resources/js/joint.direct.graph.min.js" />
+	<script src="resources/js/joint.shapes.org.min.js" />
 </module>
