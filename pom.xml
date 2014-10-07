@@ -21,20 +21,6 @@
 	</dependencies>
 
 	<build>
-		<!-- <resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-
-			<resource>
-				<directory>src/main/java/com/joint/gwt/client/resources</directory>
-				<targetPath>com/joint/gwt/client/resources</targetPath>
-				<excludes>
-					<exclude>*.java</exclude>
-				</excludes>
-			</resource>
-		</resources> -->
-
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
