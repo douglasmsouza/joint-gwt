@@ -6,9 +6,22 @@ import com.joint.gwt.client.constants.TextAnchor;
 import com.joint.gwt.client.ui.JointElement;
 import com.joint.gwt.client.ui.JointElementJS;
 
+/**
+ * This class represents a JointJS member
+ * 
+ * @author Douglas Matheus de Souza
+ */
 public class JointMember extends JointElement {
 
 	private JointMember parentMember;
+
+	public JointMember getParentMember() {
+		return parentMember;
+	}
+
+	public void setParentMember(JointMember parentMember) {
+		this.parentMember = parentMember;
+	}
 
 	public void setName(String name) {
 		getJS().setAttr(".name/text", name);
@@ -210,14 +223,6 @@ public class JointMember extends JointElement {
 
 	public int getHeight() {
 		return getJS().getPropInt("size/height");
-	}
-
-	public JointMember getParentMember() {
-		return parentMember;
-	}
-
-	public void setParentMember(JointMember parentMember) {
-		this.parentMember = parentMember;
 	}
 
 	@Override
