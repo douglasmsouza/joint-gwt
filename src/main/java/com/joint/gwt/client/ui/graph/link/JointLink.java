@@ -1,17 +1,20 @@
 package com.joint.gwt.client.ui.graph.link;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.Element;
+import com.joint.gwt.client.ui.JointElement;
 
 public class JointLink {
 
-	public static final native JavaScriptObject createLink(Element source, Element target)/*-{
+	public static final native JavaScriptObject createLink(JointElement source, JointElement target)/*-{
+		var sourceJS = source.@com.joint.gwt.client.ui.JointElement::getJS()();
+		var targetJS = target.@com.joint.gwt.client.ui.JointElement::getJS()();
+		//
 		return new $wnd.joint.shapes.org.Arrow({
 			source : {
-				id : source.id
+				id : sourceJS.id
 			},
 			target : {
-				id : target.id
+				id : targetJS.id
 			}
 		});
 	}-*/;

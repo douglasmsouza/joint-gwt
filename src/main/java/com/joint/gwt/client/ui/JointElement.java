@@ -1,89 +1,33 @@
 package com.joint.gwt.client.ui;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArrayInteger;
-import com.joint.gwt.client.ui.graph.member.JointMember;
 
 /**
- * The base JointJS element
+ * An abstract class that provides {@link JavaScriptObject} creation
  * 
- * @author Douglas Matheus de Souza
+ * @author Douglas Matheus de Souza em 08/10/2014
  */
-public class JointElement extends JavaScriptObject {
+public abstract class JointElement {
 
-	protected JointElement() {
+	private JointElementJS js = createJavaScriptObject();
+
+	protected abstract JointElementJS createJavaScriptObject();
+
+	public int[] getXY() {
+		return js.getXY();
 	}
 
-	/**
-	 * Sets the value of an attribute
-	 * 
-	 * @author Douglas Matheus de Souza
-	 */
-	protected final native void setAttr(String name, Object value)/*-{
-		this.attr(name, value);
-	}-*/;
+	public JointElementJS getJS() {
+		return js;
+	}
 
-	/**
-	 * Returns the value of an attribute as {@link String}
-	 * 
-	 * @author Douglas Matheus de Souza
-	 */
-	protected final native String getAttrString(String name)/*-{
-		return this.attr(name);
-	}-*/;
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof JavaScriptObject)) {
+			return false;
+		}
 
-	/**
-	 * Returns the value of an attribute as {@link Integer}
-	 * 
-	 * @author Douglas Matheus de Souza
-	 */
-	protected final native int getAttrInt(String name)/*-{
-		return this.attr(name);
-	}-*/;
+		return js.equals(obj);
+	}
 
-	/**
-	 * Sets the value of a property
-	 * 
-	 * @author Douglas Matheus de Souza
-	 */
-	public final native void setProp(String name, Object value)/*-{
-		this.prop(name, value);
-	}-*/;
-
-	/**
-	 * Returns the value of a property as {@link Object}
-	 * 
-	 * @author Douglas Matheus de Souza
-	 */
-	public final native Object getProp(String name)/*-{
-		return this.prop(name);
-	}-*/;
-
-	/**
-	 * Returns the value of a property as {@link String}
-	 * 
-	 * @author Douglas Matheus de Souza
-	 */
-	public final native String getPropString(String name)/*-{
-		return this.prop(name);
-	}-*/;
-
-	/**
-	 * Returns the value of a property as {@link Integer}
-	 * 
-	 * @author Douglas Matheus de Souza
-	 */
-	public final native int getPropInt(String name)/*-{
-		return this.prop(name);
-	}-*/;
-
-	/**
-	 * Returns the XY position of this element
-	 * 
-	 * @author Douglas Matheus de Souza em 02/10/2014
-	 */
-	public final native int[] getXY()/*-{
-		var box = this.getBBox();
-		return [box.x, box.y];
-	}-*/;
 }

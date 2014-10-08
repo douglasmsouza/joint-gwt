@@ -1,8 +1,9 @@
 package com.joint.gwt.client.ui.graph;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
@@ -24,7 +25,7 @@ public class JointGraph extends Composite implements Iterable<JointMember> {
 
 	private JavaScriptObject graphJS;
 	private JavaScriptObject paperJS;
-	private List<JointMember> members = new ArrayList<JointMember>();
+	private Map<JavaScriptObject, JointMember> members = new HashMap<JavaScriptObject, JointMember>();
 
 	public JointGraph(final JointPaperOptions paperOptions) {
 		this(paperOptions, null);
@@ -59,7 +60,7 @@ public class JointGraph extends Composite implements Iterable<JointMember> {
 		this.@com.joint.gwt.client.ui.graph.JointGraph::paperJS = new $wnd.joint.dia.Paper(paperOptions);
 		//
 		if (rootMember != null) {
-			this.@com.joint.gwt.client.ui.graph.JointGraph::addMember(Lcom/joint/gwt/client/ui/graph/member/JointMember;Lcom/joint/gwt/client/ui/graph/member/JointMember;)(rootMember, null);
+			this.@com.joint.gwt.client.ui.graph.JointGraph::addMember(Lcom/joint/gwt/client/ui/graph/member/JointMember;Lcom/joint/gwt/client/ui/graph/member/JointMember;)(rootMember);
 		}
 	}-*/;
 
@@ -82,6 +83,10 @@ public class JointGraph extends Composite implements Iterable<JointMember> {
 		}
 	}
 
+	private JointMember getJointMemberFromJS(JavaScriptObject javaScriptObject) {
+		return members.get(javaScriptObject);
+	}
+
 	/**
 	 * Add a listener to the graph
 	 * 
@@ -98,7 +103,8 @@ public class JointGraph extends Composite implements Iterable<JointMember> {
 						'cell:pointerdown',
 						function(cellView, evt, x, y) {
 							if (@com.joint.gwt.client.ui.graph.JointGraph::isMember(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model)) {
-								listener.@com.joint.gwt.client.ui.graph.member.JointMemberListener::onPointerDown(Lcom/joint/gwt/client/ui/graph/JointGraph;Lcom/joint/gwt/client/ui/graph/member/JointMember;II)(graphInstance, cellView.model, x, y);
+								var javaMember = graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::getJointMemberFromJS(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model);
+								listener.@com.joint.gwt.client.ui.graph.member.JointMemberListener::onPointerDown(Lcom/joint/gwt/client/ui/graph/JointGraph;Lcom/joint/gwt/client/ui/graph/member/JointMember;II)(graphInstance, javaMember, x, y);
 							}
 						});
 		paper
@@ -106,7 +112,8 @@ public class JointGraph extends Composite implements Iterable<JointMember> {
 						'cell:pointermove',
 						function(cellView, evt, x, y) {
 							if (@com.joint.gwt.client.ui.graph.JointGraph::isMember(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model)) {
-								listener.@com.joint.gwt.client.ui.graph.member.JointMemberListener::onPointerMove(Lcom/joint/gwt/client/ui/graph/JointGraph;Lcom/joint/gwt/client/ui/graph/member/JointMember;II)(graphInstance, cellView.model, x, y);
+								var javaMember = graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::getJointMemberFromJS(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model);
+								listener.@com.joint.gwt.client.ui.graph.member.JointMemberListener::onPointerMove(Lcom/joint/gwt/client/ui/graph/JointGraph;Lcom/joint/gwt/client/ui/graph/member/JointMember;II)(graphInstance, javaMember, x, y);
 							}
 						});
 		paper
@@ -114,7 +121,8 @@ public class JointGraph extends Composite implements Iterable<JointMember> {
 						'cell:pointerup',
 						function(cellView, evt) {
 							if (@com.joint.gwt.client.ui.graph.JointGraph::isMember(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model)) {
-								listener.@com.joint.gwt.client.ui.graph.member.JointMemberListener::onPointerUp(Lcom/joint/gwt/client/ui/graph/JointGraph;Lcom/joint/gwt/client/ui/graph/member/JointMember;)(graphInstance, cellView.model);
+								var javaMember = graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::getJointMemberFromJS(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model);
+								listener.@com.joint.gwt.client.ui.graph.member.JointMemberListener::onPointerUp(Lcom/joint/gwt/client/ui/graph/JointGraph;Lcom/joint/gwt/client/ui/graph/member/JointMember;)(graphInstance, javaMember);
 							}
 						});
 		paper
@@ -122,7 +130,8 @@ public class JointGraph extends Composite implements Iterable<JointMember> {
 						'cell:pointerdblclick',
 						function(cellView, evt, x, y) {
 							if (@com.joint.gwt.client.ui.graph.JointGraph::isMember(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model)) {
-								listener.@com.joint.gwt.client.ui.graph.member.JointMemberListener::onDblClick(Lcom/joint/gwt/client/ui/graph/JointGraph;Lcom/joint/gwt/client/ui/graph/member/JointMember;II)(graphInstance, cellView.model, x, y);
+								var javaMember = graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::getJointMemberFromJS(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model);
+								listener.@com.joint.gwt.client.ui.graph.member.JointMemberListener::onDblClick(Lcom/joint/gwt/client/ui/graph/JointGraph;Lcom/joint/gwt/client/ui/graph/member/JointMember;II)(graphInstance, javaMember, x, y);
 							}
 						});
 		paper
@@ -130,7 +139,8 @@ public class JointGraph extends Composite implements Iterable<JointMember> {
 						'cell:pointerclick',
 						function(cellView, evt, x, y) {
 							if (@com.joint.gwt.client.ui.graph.JointGraph::isMember(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model)) {
-								listener.@com.joint.gwt.client.ui.graph.member.JointMemberListener::onClick(Lcom/joint/gwt/client/ui/graph/JointGraph;Lcom/joint/gwt/client/ui/graph/member/JointMember;II)(graphInstance, cellView.model, x, y);
+								var javaMember = graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::getJointMemberFromJS(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model);
+								listener.@com.joint.gwt.client.ui.graph.member.JointMemberListener::onClick(Lcom/joint/gwt/client/ui/graph/JointGraph;Lcom/joint/gwt/client/ui/graph/member/JointMember;II)(graphInstance, javaMember, x, y);
 							}
 						});
 	}-*/;
@@ -149,16 +159,16 @@ public class JointGraph extends Composite implements Iterable<JointMember> {
 	 */
 	public void addMember(JointMember newMember, JointMember parentMember) {
 		newMember.setParentMember(parentMember);
-		this.members.add(newMember);
+		this.members.put(newMember.getJS(), newMember);
 		addMemberJS(newMember, parentMember);
 	}
 
 	private native void addMemberJS(JointMember newMember, JointMember parentMember)/*-{
 		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
-		graph.addCell(newMember);
+		graph.addCell(newMember.@com.joint.gwt.client.ui.graph.member.JointMember::getJS()());
 		//
 		if (parentMember != null) {
-			link = @com.joint.gwt.client.ui.graph.link.JointLink::createLink(Lcom/google/gwt/dom/client/Element;Lcom/google/gwt/dom/client/Element;)(parentMember, newMember)
+			link = @com.joint.gwt.client.ui.graph.link.JointLink::createLink(Lcom/joint/gwt/client/ui/JointElement;Lcom/joint/gwt/client/ui/JointElement;)(parentMember,newMember);
 			graph.addCell(link);
 		}
 		//
@@ -195,8 +205,8 @@ public class JointGraph extends Composite implements Iterable<JointMember> {
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public List<JointMember> getMembers() {
-		return members;
+	public Collection<JointMember> getMembers() {
+		return members.values();
 	}
 
 	/**
@@ -214,7 +224,7 @@ public class JointGraph extends Composite implements Iterable<JointMember> {
 	}
 
 	public Iterator<JointMember> iterator() {
-		return members.iterator();
+		return members.values().iterator();
 	}
 
 }
