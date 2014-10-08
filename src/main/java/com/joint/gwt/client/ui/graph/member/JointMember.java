@@ -10,32 +10,37 @@ public final class JointMember extends JointElement {
 	public static native JointMember createMember(JointMemberOptions options)/*-{
 		return new $wnd.joint.shapes.org.Member({
 			attrs : {
-				'.card' : {
+				".card" : {
 					fill : options.fillColor,
-					stroke : options.strokeColor
+					stroke : options.strokeColor,
+					"stroke-width": options.strokeWidth
 				},
-				'.rank' : {
+				".rank" : {
 					text : options.rank,
-					'font-size' : options.rankTextOptions.fontSize,
-					'font-weight' : options.rankTextOptions.fontWeight,
-					'text-decoration' : options.rankTextOptions.textDecoration,
-					'text-anchor' : options.rankTextOptions.textAnchor,
-					'ref-x' : options.rankTextOptions.positionX,
-					'ref-y' : options.rankTextOptions.positionY
+					"font-size" : options.rankTextOptions.fontSize,
+					"font-weight" : options.rankTextOptions.fontWeight,
+					"text-decoration" : options.rankTextOptions.textDecoration,
+					"text-anchor" : options.rankTextOptions.textAnchor,
+					"ref-x" : options.rankTextOptions.positionX,
+					"ref-y" : options.rankTextOptions.positionY
 				},
-				'.name' : {
+				".name" : {
 					text : options.name,
-					'font-size' : options.nameTextOptions.fontSize,
-					'font-weight' : options.nameTextOptions.fontWeight,
-					'text-decoration' : options.nameTextOptions.textDecoration,
-					'text-anchor' : options.nameTextOptions.textAnchor,
-					'ref-x' : options.nameTextOptions.positionX,
-					'ref-y' : options.nameTextOptions.positionY
+					"font-size" : options.nameTextOptions.fontSize,
+					"font-weight" : options.nameTextOptions.fontWeight,
+					"text-decoration" : options.nameTextOptions.textDecoration,
+					"text-anchor" : options.nameTextOptions.textAnchor,
+					"ref-x" : options.nameTextOptions.positionX,
+					"ref-y" : options.nameTextOptions.positionY
 				},
 				image : {
 					width : options.imageWidth,
 					height : options.imageHeight
 				}
+			},
+			size : {
+				width : options.width,
+				height : options.height
 			}
 		});
 	}-*/;

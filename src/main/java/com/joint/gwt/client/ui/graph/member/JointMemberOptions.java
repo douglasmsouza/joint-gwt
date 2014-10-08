@@ -27,6 +27,10 @@ public final class JointMemberOptions extends JavaScriptObject {
 		this.strokeColor = strokeColor;
 	}-*/;
 
+	public native void setStrokeWidth(int strokeWidth)/*-{
+		this.strokeWidth = strokeWidth;
+	}-*/;
+
 	public native void setNameTextOptions(JointMemberOptionsText options)/*-{
 		this.nameTextOptions = options;
 	}-*/;
@@ -41,5 +45,13 @@ public final class JointMemberOptions extends JavaScriptObject {
 
 	public native void setImageHeight(int imageHeight)/*-{
 		this.imageHeight = imageHeight;
+	}-*/;
+
+	public native void setWidth(int width)/*-{
+		this.width = width;
+	}-*/;
+
+	public native void setHeight(int height)/*-{
+		this.height = height;
 	}-*/;
 }
