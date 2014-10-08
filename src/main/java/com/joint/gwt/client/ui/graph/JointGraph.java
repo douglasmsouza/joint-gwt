@@ -165,7 +165,8 @@ public class JointGraph extends Composite implements Iterable<JointMember> {
 
 	private native void addMemberJS(JointMember newMember, JointMember parentMember)/*-{
 		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
-		graph.addCell(newMember.@com.joint.gwt.client.ui.graph.member.JointMember::getJS()());
+		var newMemberJS = newMember.@com.joint.gwt.client.ui.graph.member.JointMember::getJS()();
+		graph.addCell(newMemberJS);
 		//
 		if (parentMember != null) {
 			link = @com.joint.gwt.client.ui.graph.link.JointLink::createLink(Lcom/joint/gwt/client/ui/JointElement;Lcom/joint/gwt/client/ui/JointElement;)(parentMember,newMember);
