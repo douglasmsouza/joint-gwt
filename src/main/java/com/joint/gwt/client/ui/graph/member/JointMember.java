@@ -18,7 +18,7 @@ public class JointMember<T extends Serializable> extends JointElementRect {
 	private T userId;
 	private JointMember<T> parentMember;
 
-	public JointMember(int width, int height) {
+	public JointMember(float width, float height) {
 		super(width, height);
 	}
 
@@ -247,6 +247,10 @@ public class JointMember<T extends Serializable> extends JointElementRect {
 			size : {
 				width : instance.@com.joint.gwt.client.util.Rect::getWidth()(),
 				height : instance.@com.joint.gwt.client.util.Rect::getHeight()()
+			},
+			rect : {
+				rx : 0,
+				ry : 0
 			}
 		});
 	}-*/;

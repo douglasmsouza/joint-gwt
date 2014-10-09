@@ -15,7 +15,8 @@ public class JointLink {
 			},
 			target : {
 				id : targetJS.id
-			}
+			},
+			smooth : false
 		});
 	}-*/;
 }

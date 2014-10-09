@@ -7,27 +7,28 @@ package com.joint.gwt.client.util;
  */
 public class Rect {
 
-	private int width;
-	private int height;
+	private float width;
+	private float height;
 
-	public Rect(int width, int height) {
+	public Rect(float width, float height) {
+		super();
 		this.width = width;
 		this.height = height;
 	}
 
-	public int getWidth() {
+	public float getWidth() {
 		return width;
 	}
 
-	public void setWidth(int width) {
+	public void setWidth(float width) {
 		this.width = width;
 	}
 
-	public int getHeight() {
+	public float getHeight() {
 		return height;
 	}
 
-	public void setHeight(int height) {
+	public void setHeight(float height) {
 		this.height = height;
 	}
 

@@ -78,7 +78,7 @@ public class JointGraph<T extends Serializable> extends Composite implements Ite
 			this.@com.joint.gwt.client.ui.graph.JointGraph::addMember(Lcom/joint/gwt/client/ui/graph/member/JointMember;Lcom/joint/gwt/client/ui/graph/member/JointMember;)(rootMember);
 		}
 	}-*/;
-
+	
 	/**
 	 * Add a listener to the graph
 	 * 
