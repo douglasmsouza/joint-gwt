@@ -1,25 +1,40 @@
 package com.joint.gwt.client.ui.graph.member;
 
+import java.io.Serializable;
+
 import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.dom.client.Style.TextDecoration;
 import com.joint.gwt.client.constants.TextAnchor;
-import com.joint.gwt.client.ui.JointElement;
 import com.joint.gwt.client.ui.JointElementJS;
+import com.joint.gwt.client.ui.JointElementRect;
 
 /**
  * This class represents a JointJS member
  * 
  * @author Douglas Matheus de Souza
  */
-public class JointMember extends JointElement {
+public class JointMember<T extends Serializable> extends JointElementRect {
 
-	private JointMember parentMember;
+	private T userId;
+	private JointMember<T> parentMember;
 
-	public JointMember getParentMember() {
+	public JointMember(int width, int height) {
+		super(width, height);
+	}
+
+	public T getUserId() {
+		return userId;
+	}
+
+	public void setUserId(T userId) {
+		this.userId = userId;
+	}
+
+	public JointMember<T> getParentMember() {
 		return parentMember;
 	}
 
-	public void setParentMember(JointMember parentMember) {
+	public void setParentMember(JointMember<T> parentMember) {
 		this.parentMember = parentMember;
 	}
 
@@ -227,6 +242,12 @@ public class JointMember extends JointElement {
 
 	@Override
 	protected final native JointElementJS createJavaScriptObject()/*-{
-		return new $wnd.joint.shapes.org.Member;
+		var instance = this.@com.joint.gwt.client.ui.JointElementRect::getRect()();
+		return new $wnd.joint.shapes.org.Member({
+			size : {
+				width : instance.@com.joint.gwt.client.util.Rect::getWidth()(),
+				height : instance.@com.joint.gwt.client.util.Rect::getHeight()()
+			}
+		});
 	}-*/;
 }
