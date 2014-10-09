@@ -3,7 +3,9 @@
 	<inherits name="com.google.gwt.user.User" />
 	<source path="client" />
 	<stylesheet src="resources/css/joint.css" />
+	<stylesheet src="resources/css/joint.ui.paper.scroller.css" />
 	<script src="resources/js/joint.min.js" />
 	<script src="resources/js/joint.direct.graph.min.js" />
 	<script src="resources/js/joint.shapes.org.min.js" />
+	<script src="resources/js/joint.ui.paper.scroller.js" />
 </module>
