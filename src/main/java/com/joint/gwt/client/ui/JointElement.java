@@ -6,11 +6,11 @@ import com.google.gwt.core.client.JavaScriptObject;
  * An abstract class that provides {@link JavaScriptObject} creation for JointJS
  * elements
  * 
- * @author Douglas Matheus de Souza em 08/10/2014
+ * @author Douglas Matheus de Souza
  */
 public abstract class JointElement {
 
-	private JointElementJS js = createJavaScriptObject();
+	private JointElementJS js;
 
 	protected abstract JointElementJS createJavaScriptObject();
 
@@ -19,7 +19,14 @@ public abstract class JointElement {
 	}
 
 	public JointElementJS getJS() {
+		if (js == null)
+			js = createJavaScriptObject();
+		//
 		return js;
+	}
+
+	public JointElement getInstance() {
+		return this;
 	}
 
 }
