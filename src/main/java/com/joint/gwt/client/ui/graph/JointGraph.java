@@ -8,6 +8,7 @@ import java.util.Map;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.ui.Composite;
@@ -15,6 +16,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.joint.gwt.client.ui.graph.member.JointMember;
 import com.joint.gwt.client.ui.graph.member.JointMemberListener;
 import com.joint.gwt.client.ui.graph.paper.JointPaperOptions;
+import com.joint.gwt.client.util.Position;
 
 /**
  * An implementation of joint.dia.Graph of JointJS library
@@ -126,49 +128,74 @@ public class JointGraph<T extends JointMember> extends Composite implements Iter
 		paper
 				.on(
 						'cell:pointerdown',
-						function(cellView, evt, x, y) {
-							if (@com.joint.gwt.client.ui.graph.JointGraph::isMember(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model)) {
-								var javaMember = graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::getJointMemberFromJS(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model);
-								listener.@com.joint.gwt.client.ui.graph.member.JointMemberListener::onPointerDown(Lcom/joint/gwt/client/ui/graph/JointGraph;Lcom/joint/gwt/client/ui/graph/member/JointMember;II)(graphInstance, javaMember, x, y);
-							}
+						function(cellView, evt) {
+							graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::fireEventJS(Lcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JavaScriptObject;Lcom/joint/gwt/client/ui/graph/member/JointMemberListener;)(cellView.model, evt, listener);
 						});
 		paper
 				.on(
 						'cell:pointermove',
-						function(cellView, evt, x, y) {
-							if (@com.joint.gwt.client.ui.graph.JointGraph::isMember(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model)) {
-								var javaMember = graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::getJointMemberFromJS(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model);
-								listener.@com.joint.gwt.client.ui.graph.member.JointMemberListener::onPointerMove(Lcom/joint/gwt/client/ui/graph/JointGraph;Lcom/joint/gwt/client/ui/graph/member/JointMember;II)(graphInstance, javaMember, x, y);
-							}
+						function(cellView, evt) {
+							graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::fireEventJS(Lcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JavaScriptObject;Lcom/joint/gwt/client/ui/graph/member/JointMemberListener;)(cellView.model, evt, listener);
 						});
 		paper
 				.on(
 						'cell:pointerup',
 						function(cellView, evt) {
-							if (@com.joint.gwt.client.ui.graph.JointGraph::isMember(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model)) {
-								var javaMember = graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::getJointMemberFromJS(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model);
-								listener.@com.joint.gwt.client.ui.graph.member.JointMemberListener::onPointerUp(Lcom/joint/gwt/client/ui/graph/JointGraph;Lcom/joint/gwt/client/ui/graph/member/JointMember;)(graphInstance, javaMember);
-							}
+							graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::fireEventJS(Lcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JavaScriptObject;Lcom/joint/gwt/client/ui/graph/member/JointMemberListener;)(cellView.model, evt, listener);
 						});
 		paper
 				.on(
 						'cell:pointerdblclick',
-						function(cellView, evt, x, y) {
-							if (@com.joint.gwt.client.ui.graph.JointGraph::isMember(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model)) {
-								var javaMember = graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::getJointMemberFromJS(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model);
-								listener.@com.joint.gwt.client.ui.graph.member.JointMemberListener::onDblClick(Lcom/joint/gwt/client/ui/graph/JointGraph;Lcom/joint/gwt/client/ui/graph/member/JointMember;II)(graphInstance, javaMember, x, y);
-							}
+						function(cellView, evt) {
+							graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::fireEventJS(Lcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JavaScriptObject;Lcom/joint/gwt/client/ui/graph/member/JointMemberListener;)(cellView.model, evt, listener);
 						});
 		paper
 				.on(
 						'cell:pointerclick',
-						function(cellView, evt, x, y) {
-							if (@com.joint.gwt.client.ui.graph.JointGraph::isMember(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model)) {
-								var javaMember = graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::getJointMemberFromJS(Lcom/google/gwt/core/client/JavaScriptObject;)(cellView.model);
-								listener.@com.joint.gwt.client.ui.graph.member.JointMemberListener::onClick(Lcom/joint/gwt/client/ui/graph/JointGraph;Lcom/joint/gwt/client/ui/graph/member/JointMember;II)(graphInstance, javaMember, x, y);
-							}
+						function(cellView, evt) {
+							graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::fireEventJS(Lcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JavaScriptObject;Lcom/joint/gwt/client/ui/graph/member/JointMemberListener;)(cellView.model, evt, listener);
 						});
 	}-*/;
+
+	/**
+	 * Fires an paper event
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	private native void fireEventJS(JavaScriptObject model, JavaScriptObject event, JointMemberListener<T> listener)/*-{
+		var graphInstance = this.@com.joint.gwt.client.ui.graph.JointGraph::getInstance()();
+		if (@com.joint.gwt.client.ui.graph.JointGraph::isMember(Lcom/google/gwt/core/client/JavaScriptObject;)(model)) {
+			var javaMember = graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::getJointMemberFromJS(Lcom/google/gwt/core/client/JavaScriptObject;)(model);
+			var graphPosition = @com.joint.gwt.client.util.Position::create(II)(event.offsetX,event.offsetY);
+			var pagePosition = @com.joint.gwt.client.util.Position::create(II)(event.pageX,event.pageY);
+			graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::fireEvent(Ljava/lang/String;Lcom/joint/gwt/client/ui/graph/member/JointMember;Lcom/joint/gwt/client/util/Position;Lcom/joint/gwt/client/util/Position;Lcom/joint/gwt/client/ui/graph/member/JointMemberListener;)(event.type,javaMember,graphPosition,pagePosition,listener);
+		}
+	}-*/;
+
+	/**
+	 * Fires an paper event
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	private void fireEvent(String event, T member, Position graphPosition, Position pagePosition, JointMemberListener<T> listener) {
+		switch (event) {
+		case BrowserEvents.MOUSEDOWN:
+			listener.onPointerDown(this, member, graphPosition, pagePosition);
+			break;
+		case BrowserEvents.MOUSEMOVE:
+			listener.onPointerMove(this, member, graphPosition, pagePosition);
+			break;
+		case BrowserEvents.MOUSEUP:
+			listener.onPointerUp(this, member, graphPosition, pagePosition);
+			break;
+		case BrowserEvents.DBLCLICK:
+			listener.onDblClick(this, member, graphPosition, pagePosition);
+			break;
+		case BrowserEvents.CLICK:
+			listener.onClick(this, member, graphPosition, pagePosition);
+			break;
+		}
+	}
 
 	private static final native boolean isMember(JavaScriptObject el)/*-{
 		return el instanceof $wnd.joint.shapes.org.Member;
