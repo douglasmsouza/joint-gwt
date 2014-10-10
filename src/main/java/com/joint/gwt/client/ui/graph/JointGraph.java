@@ -12,7 +12,7 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.joint.gwt.client.ui.graph.member.JointMember;
 import com.joint.gwt.client.ui.graph.member.JointMemberListener;
 import com.joint.gwt.client.ui.graph.paper.JointPaperOptions;
@@ -22,7 +22,7 @@ import com.joint.gwt.client.ui.graph.paper.JointPaperOptions;
  * 
  * @param <T> type of user IDs of each member
  * 
- * @author Douglas Matheus de Souza em 01/10/2014
+ * @author Douglas Matheus de Souza
  */
 public class JointGraph<T extends Serializable> extends Composite implements Iterable<JointMember<T>> {
 
@@ -31,12 +31,14 @@ public class JointGraph<T extends Serializable> extends Composite implements Ite
 	private JavaScriptObject paperScrollerJS;
 	private Map<JavaScriptObject, JointMember<T>> members = new HashMap<JavaScriptObject, JointMember<T>>();
 
+	private float graphScale = 1;
+
 	public JointGraph(final JointPaperOptions paperOptions) {
 		this(paperOptions, null);
 	}
 
 	public JointGraph(final JointPaperOptions paperOptions, final JointMember<T> rootMember) {
-		initWidget(new FlowPanel());
+		initWidget(new SimplePanel());
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			public void execute() {
@@ -61,11 +63,17 @@ public class JointGraph<T extends Serializable> extends Composite implements Ite
 		paperScroller.options = {
 			autoResizePaper : true
 		};
+		paperScroller.$el.css({
+			width : paperOptions.scrollerWidth,
+			height : paperOptions.scrollerHeight
+		});
 		//Creates the paper
 		paperOptions["model"] = graph;
 		paperOptions["el"] = paperScroller.el;
 		var paper = new $wnd.joint.dia.Paper(paperOptions);
 		paperScroller.options.paper = paper;
+		//Initiate panning when the user grabs the blank area of the paper.
+		paper.on('blank:pointerdown', paperScroller.startPanning);
 		//Bind the paper into the container
 		var containerElement = $doc.getElementById(containerId);
 		containerElement.appendChild(paperScroller.render().el);
@@ -78,7 +86,7 @@ public class JointGraph<T extends Serializable> extends Composite implements Ite
 			this.@com.joint.gwt.client.ui.graph.JointGraph::addMember(Lcom/joint/gwt/client/ui/graph/member/JointMember;Lcom/joint/gwt/client/ui/graph/member/JointMember;)(rootMember);
 		}
 	}-*/;
-	
+
 	/**
 	 * Add a listener to the graph
 	 * 
@@ -186,7 +194,7 @@ public class JointGraph<T extends Serializable> extends Composite implements Ite
 		if (parentMember != null) {
 			link = @com.joint.gwt.client.ui.graph.link.JointLink::createLink(Lcom/joint/gwt/client/ui/JointElement;Lcom/joint/gwt/client/ui/JointElement;)(parentMember,newMember);
 			graph.addCell(link);
-		} 
+		}
 		//
 		this.@com.joint.gwt.client.ui.graph.JointGraph::redraw()();
 	}-*/;
@@ -202,6 +210,61 @@ public class JointGraph<T extends Serializable> extends Composite implements Ite
 			setLinkVertices : true,
 			nodeSep : 50
 		});
+	}-*/;
+
+	/**
+	 * Scale the graph
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public void scale(float scaleValue) {
+		float newGraphScale = graphScale + scaleValue;
+		if (newGraphScale > 0) {
+			this.graphScale = newGraphScale;
+			scaleJS(graphScale);
+		}
+	};
+
+	private native void scaleJS(float scaleValue)/*-{
+		var paper = this.@com.joint.gwt.client.ui.graph.JointGraph::paperJS;
+		paper.scale(scaleValue, scaleValue);
+	}-*/;
+
+	/**
+	 * Scale the graph by 0.1
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public void zoomIn() {
+		scale(0.1f);
+	}
+
+	/**
+	 * Scale the graph by -0.1
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public void zoomOut() {
+		scale(-0.1f);
+	}
+
+	/**
+	 * Scale the graph by its real size
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public void zoomReal() {
+		scale(1 - graphScale);
+	}
+
+	/**
+	 * Fits the graph to its content
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public native void fitToContent()/*-{
+		var paper = this.@com.joint.gwt.client.ui.graph.JointGraph::paperJS;
+		paper.fitToContent();
 	}-*/;
 
 	/**

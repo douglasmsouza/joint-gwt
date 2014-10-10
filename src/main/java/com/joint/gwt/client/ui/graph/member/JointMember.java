@@ -208,6 +208,11 @@ public class JointMember<T extends Serializable> extends JointElementRect {
 		return getJS().getAttrInt(".card/stroke-width");
 	}
 
+	public void setStrokeRadius(int radius) {
+		getJS().setAttr(".card/rx", radius);
+		getJS().setAttr(".card/ry", radius);
+	}
+
 	public void setImageWidth(int width) {
 		getJS().setAttr("image/width", width);
 	}
@@ -248,7 +253,7 @@ public class JointMember<T extends Serializable> extends JointElementRect {
 				width : instance.@com.joint.gwt.client.util.Rect::getWidth()(),
 				height : instance.@com.joint.gwt.client.util.Rect::getHeight()()
 			},
-			rect : {
+			'.card' : {
 				rx : 0,
 				ry : 0
 			}
