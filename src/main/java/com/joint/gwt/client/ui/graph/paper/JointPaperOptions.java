@@ -42,4 +42,5 @@ public final class JointPaperOptions extends JavaScriptObject {
 	public native void setScrollerHeight(int scrollerHeight)/*-{
 		this.scrollerHeight = scrollerHeight;
 	}-*/;
+
 }

@@ -1,6 +1,5 @@
 package com.joint.gwt.client.ui.graph;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,12 +23,13 @@ import com.joint.gwt.client.ui.graph.paper.JointPaperOptions;
  * 
  * @author Douglas Matheus de Souza
  */
-public class JointGraph<T extends Serializable> extends Composite implements Iterable<JointMember<T>> {
+@SuppressWarnings("rawtypes")
+public class JointGraph<T extends JointMember> extends Composite implements Iterable<T> {
 
 	private JavaScriptObject graphJS;
 	private JavaScriptObject paperJS;
 	private JavaScriptObject paperScrollerJS;
-	private Map<JavaScriptObject, JointMember<T>> members = new HashMap<JavaScriptObject, JointMember<T>>();
+	private Map<JavaScriptObject, T> members = new HashMap<JavaScriptObject, T>();
 
 	private float graphScale = 1;
 
@@ -37,7 +37,7 @@ public class JointGraph<T extends Serializable> extends Composite implements Ite
 		this(paperOptions, null);
 	}
 
-	public JointGraph(final JointPaperOptions paperOptions, final JointMember<T> rootMember) {
+	public JointGraph(final JointPaperOptions paperOptions, final T rootMember) {
 		initWidget(new SimplePanel());
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -56,22 +56,24 @@ public class JointGraph<T extends Serializable> extends Composite implements Ite
 	 * @param rootMember the root member of the graph
 	 * @author Douglas Matheus de Souza
 	 */
-	private native void initGraphJS(String containerId, JointPaperOptions paperOptions, JointMember<T> rootMember)/*-{
+	private native void initGraphJS(String containerId, JointPaperOptions paperOptions, T rootMember)/*-{
+		//Creates the graph
 		var graph = new $wnd.joint.dia.Graph;
 		//Creates the paperScroller
 		var paperScroller = new $wnd.joint.ui.PaperScroller();
+		//Creates the paper
+		paperOptions["model"] = graph;
+		paperOptions["el"] = paperScroller.el;
+		var paper = new $wnd.joint.dia.Paper(paperOptions);
+		//Sets the scroller options
 		paperScroller.options = {
+			paper : paper,
 			autoResizePaper : true
 		};
 		paperScroller.$el.css({
 			width : paperOptions.scrollerWidth,
 			height : paperOptions.scrollerHeight
 		});
-		//Creates the paper
-		paperOptions["model"] = graph;
-		paperOptions["el"] = paperScroller.el;
-		var paper = new $wnd.joint.dia.Paper(paperOptions);
-		paperScroller.options.paper = paper;
 		//Initiate panning when the user grabs the blank area of the paper.
 		paper.on('blank:pointerdown', paperScroller.startPanning);
 		//Bind the paper into the container
@@ -106,7 +108,7 @@ public class JointGraph<T extends Serializable> extends Composite implements Ite
 		}
 	}
 
-	private JointMember<T> getJointMemberFromJS(JavaScriptObject javaScriptObject) {
+	private T getJointMemberFromJS(JavaScriptObject javaScriptObject) {
 		return members.get(javaScriptObject);
 	}
 
@@ -180,13 +182,13 @@ public class JointGraph<T extends Serializable> extends Composite implements Ite
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public void addMember(JointMember<T> newMember, JointMember<T> parentMember) {
+	public void addMember(T newMember, T parentMember) {
 		newMember.setParentMember(parentMember);
 		this.members.put(newMember.getJS(), newMember);
 		addMemberJS(newMember, parentMember);
 	}
 
-	private native void addMemberJS(JointMember<T> newMember, JointMember<T> parentMember)/*-{
+	private native void addMemberJS(T newMember, T parentMember)/*-{
 		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
 		var newMemberJS = newMember.@com.joint.gwt.client.ui.graph.member.JointMember::getJS()();
 		graph.addCell(newMemberJS);
@@ -282,7 +284,7 @@ public class JointGraph<T extends Serializable> extends Composite implements Ite
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public Collection<JointMember<T>> getMembers() {
+	public Collection<T> getMembers() {
 		return members.values();
 	}
 
@@ -300,7 +302,7 @@ public class JointGraph<T extends Serializable> extends Composite implements Ite
 		return this;
 	}
 
-	public Iterator<JointMember<T>> iterator() {
+	public Iterator<T> iterator() {
 		return members.values().iterator();
 	}
 

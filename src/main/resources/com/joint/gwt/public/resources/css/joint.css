@@ -244,3 +244,11 @@ Do not allow adding new vertices: .connection-wrap { pointer-events: none; }
 .card,.rank,.name,.connection-wrap,image {
 	cursor: pointer;
 }
+
+.paper-scroller {
+   background-color: lightgray;
+}
+
+.paper-scroller svg {
+   background-color: white;
+}
