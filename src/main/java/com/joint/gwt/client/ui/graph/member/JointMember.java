@@ -1,7 +1,5 @@
 package com.joint.gwt.client.ui.graph.member;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.dom.client.Style.FontWeight;
@@ -9,39 +7,36 @@ import com.google.gwt.dom.client.Style.TextDecoration;
 import com.joint.gwt.client.constants.TextAnchor;
 import com.joint.gwt.client.ui.element.JointElementJS;
 import com.joint.gwt.client.ui.element.JointElementRect;
+import com.joint.gwt.shared.ui.graph.member.JointMemberBean;
 
 /**
  * This class represents a JointJS member
  * 
  * @author Douglas Matheus de Souza
  */
-public class JointMember<T extends Serializable> extends JointElementRect {
+public class JointMember<T extends JointMemberBean<T>> extends JointElementRect {
 
-	private T userId;
-	private List<JointMember<T>> children = new ArrayList<>();
+	private T bean;
 
-	public JointMember(float width, float height) {
+	public JointMember(T bean, float width, float height) {
 		super(width, height);
+		this.bean = bean;
 	}
 
-	public T getUserId() {
-		return userId;
-	}
-
-	public void setUserId(T userId) {
-		this.userId = userId;
+	public T getBean() {
+		return bean;
 	}
 
 	public void addChild(JointMember<T> child) {
-		children.add(child);
+		bean.addChild(child.getBean());
 	}
 
-	public List<JointMember<T>> getChildren() {
-		return children;
+	public List<T> getChildren() {
+		return bean.getChildren();
 	}
 
 	public boolean hasChildren() {
-		return !children.isEmpty();
+		return bean.hasChildren();
 	}
 
 	public void setName(String name) {

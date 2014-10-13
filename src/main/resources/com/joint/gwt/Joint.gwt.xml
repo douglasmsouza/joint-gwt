@@ -2,6 +2,7 @@
 <module>
 	<inherits name="com.google.gwt.user.User" />
 	<source path="client" />
+	<source path="shared" />
 	<stylesheet src="resources/css/joint.css" />
 	<stylesheet src="resources/css/joint.ui.paper.scroller.css" />
 	<script src="resources/js/joint.min.js" />

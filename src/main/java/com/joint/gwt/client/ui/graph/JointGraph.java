@@ -16,24 +16,26 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.joint.gwt.client.ui.element.view.JointElementView;
 import com.joint.gwt.client.ui.graph.member.JointMember;
 import com.joint.gwt.client.ui.graph.member.JointMemberListener;
+import com.joint.gwt.client.ui.graph.member.JointMemberListenerAdapter;
 import com.joint.gwt.client.ui.graph.paper.JointPaperOptions;
 import com.joint.gwt.client.util.Position;
+import com.joint.gwt.shared.ui.graph.member.JointMemberBean;
 
 /**
  * An implementation of joint.dia.Graph of JointJS library
  * 
- * @param <T> type of user IDs of each member
+ * @param <T> type of user beans of each member
  * 
  * @author Douglas Matheus de Souza
  */
-@SuppressWarnings("rawtypes")
-public class JointGraph<T extends JointMember> extends Composite implements Iterable<T> {
+public class JointGraph<T extends JointMemberBean<T>> extends Composite implements Iterable<JointMember<T>> {
 
 	private JavaScriptObject graphJS;
 	private JavaScriptObject paperJS;
 	private JavaScriptObject paperScrollerJS;
-	private Map<JavaScriptObject, T> members = new HashMap<JavaScriptObject, T>();
-	private T rootMember;
+	private Map<JavaScriptObject, JointMember<T>> members = new HashMap<JavaScriptObject, JointMember<T>>();
+	private JointMember<T> rootMember;
+	private JointMember<T> selectedMember;
 
 	private float graphScale = 1;
 
@@ -47,6 +49,12 @@ public class JointGraph<T extends JointMember> extends Composite implements Iter
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			public void execute() {
 				initGraphJS(getElement().getId(), paperOptions, rootMember);
+				//
+				addListener(new JointMemberListenerAdapter<T>() {
+					public void onClick(JointGraph<T> graph, JointMember<T> member, Position graphPosition, Position pagePosition) {
+						JointGraph.this.selectedMember = member;
+					};
+				});
 			}
 		});
 	}
@@ -98,13 +106,13 @@ public class JointGraph<T extends JointMember> extends Composite implements Iter
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public void setElementView(final JointElementView<T> elementView) {
+	public void setElementView(final JointElementView<JointMember<T>> elementView) {
 		if (isAttached()) {
-			setElementViewRendered(elementView);
+			setElementViewAttached(elementView);
 		} else {
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 				public void execute() {
-					setElementViewRendered(elementView);
+					setElementViewAttached(elementView);
 				}
 			});
 		}
@@ -115,7 +123,7 @@ public class JointGraph<T extends JointMember> extends Composite implements Iter
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	private native void setElementViewRendered(JointElementView<T> elementView)/*-{
+	private native void setElementViewAttached(JointElementView<JointMember<T>> elementView)/*-{
 		var graphInstance = this.@com.joint.gwt.client.ui.graph.JointGraph::getInstance()();
 		var paperJS = this.@com.joint.gwt.client.ui.graph.JointGraph::paperJS;
 		paperJS.options.elementView = $wnd.joint.dia.ElementView
@@ -137,11 +145,11 @@ public class JointGraph<T extends JointMember> extends Composite implements Iter
 	 */
 	public void addListener(final JointMemberListener<T> listener) {
 		if (isAttached()) {
-			addListenerRendered(listener);
+			addListenerAttached(listener);
 		} else {
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 				public void execute() {
-					addListenerRendered(listener);
+					addListenerAttached(listener);
 				}
 			});
 		}
@@ -154,7 +162,7 @@ public class JointGraph<T extends JointMember> extends Composite implements Iter
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	private final native void addListenerRendered(JointMemberListener<T> listener)/*-{
+	private final native void addListenerAttached(JointMemberListener<T> listener)/*-{
 		var graphInstance = this.@com.joint.gwt.client.ui.graph.JointGraph::getInstance()();
 		var paper = this.@com.joint.gwt.client.ui.graph.JointGraph::paperJS;
 		//
@@ -190,7 +198,7 @@ public class JointGraph<T extends JointMember> extends Composite implements Iter
 						});
 	}-*/;
 
-	private T getJointMemberFromJS(JavaScriptObject javaScriptObject) {
+	private JointMember<T> getJointMemberFromJS(JavaScriptObject javaScriptObject) {
 		return members.get(javaScriptObject);
 	}
 
@@ -214,7 +222,7 @@ public class JointGraph<T extends JointMember> extends Composite implements Iter
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	private void fireEvent(String event, T member, Position graphPosition, Position pagePosition, JointMemberListener<T> listener) {
+	private void fireEvent(String event, JointMember<T> member, Position graphPosition, Position pagePosition, JointMemberListener<T> listener) {
 		switch (event) {
 		case BrowserEvents.MOUSEDOWN:
 			listener.onPointerDown(this, member, graphPosition, pagePosition);
@@ -246,7 +254,7 @@ public class JointGraph<T extends JointMember> extends Composite implements Iter
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public void addMember(T newMember, T parentMember) {
+	public void addMember(JointMember<T> newMember, JointMember<T> parentMember) {
 		// Sets the graph's root member
 		if (rootMember == null) {
 			this.rootMember = newMember;
@@ -261,7 +269,7 @@ public class JointGraph<T extends JointMember> extends Composite implements Iter
 		addMemberJS(newMember, parentMember);
 	}
 
-	private native void addMemberJS(T newMember, T parentMember)/*-{
+	private native void addMemberJS(JointMember<T> newMember, JointMember<T> parentMember)/*-{
 		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
 		var newMemberJS = newMember.@com.joint.gwt.client.ui.graph.member.JointMember::getJS()();
 		graph.addCell(newMemberJS);
@@ -357,7 +365,7 @@ public class JointGraph<T extends JointMember> extends Composite implements Iter
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public Collection<T> getMembers() {
+	public Collection<JointMember<T>> getMembers() {
 		return members.values();
 	}
 
@@ -375,8 +383,16 @@ public class JointGraph<T extends JointMember> extends Composite implements Iter
 		return this;
 	}
 
-	public Iterator<T> iterator() {
+	@Override
+	public Iterator<JointMember<T>> iterator() {
 		return members.values().iterator();
 	}
 
+	public JointMember<T> getRootMember() {
+		return rootMember;
+	}
+
+	public JointMember<T> getSelectedMember() {
+		return selectedMember;
+	}
 }
