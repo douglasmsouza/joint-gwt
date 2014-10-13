@@ -33,6 +33,7 @@ public class JointGraph<T extends JointMember> extends Composite implements Iter
 	private JavaScriptObject paperJS;
 	private JavaScriptObject paperScrollerJS;
 	private Map<JavaScriptObject, T> members = new HashMap<JavaScriptObject, T>();
+	private T rootMember;
 
 	private float graphScale = 1;
 
@@ -246,8 +247,17 @@ public class JointGraph<T extends JointMember> extends Composite implements Iter
 	 * @author Douglas Matheus de Souza
 	 */
 	public void addMember(T newMember, T parentMember) {
-		newMember.setParentMember(parentMember);
+		// Sets the graph's root member
+		if (rootMember == null) {
+			this.rootMember = newMember;
+		}
+		// Associates the newMember to the parentMember
+		if (parentMember != null) {
+			parentMember.addChild(newMember);
+		}
+		// Maps the java object instance by the JavaScriptObject
 		this.members.put(newMember.getJS(), newMember);
+		// Draw the member in the graph
 		addMemberJS(newMember, parentMember);
 	}
 

@@ -1,6 +1,8 @@
 package com.joint.gwt.client.ui.graph.member;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.dom.client.Style.TextDecoration;
@@ -16,7 +18,7 @@ import com.joint.gwt.client.ui.element.JointElementRect;
 public class JointMember<T extends Serializable> extends JointElementRect {
 
 	private T userId;
-	private JointMember<T> parentMember;
+	private List<JointMember<T>> children = new ArrayList<>();
 
 	public JointMember(float width, float height) {
 		super(width, height);
@@ -30,12 +32,16 @@ public class JointMember<T extends Serializable> extends JointElementRect {
 		this.userId = userId;
 	}
 
-	public JointMember<T> getParentMember() {
-		return parentMember;
+	public void addChild(JointMember<T> child) {
+		children.add(child);
 	}
 
-	public void setParentMember(JointMember<T> parentMember) {
-		this.parentMember = parentMember;
+	public List<JointMember<T>> getChildren() {
+		return children;
+	}
+
+	public boolean hasChildren() {
+		return !children.isEmpty();
 	}
 
 	public void setName(String name) {
