@@ -1,4 +1,4 @@
-package com.joint.gwt.client.ui;
+package com.joint.gwt.client.ui.element;
 
 import com.google.gwt.core.client.JavaScriptObject;
 

@@ -5,8 +5,8 @@ import java.io.Serializable;
 import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.dom.client.Style.TextDecoration;
 import com.joint.gwt.client.constants.TextAnchor;
-import com.joint.gwt.client.ui.JointElementJS;
-import com.joint.gwt.client.ui.JointElementRect;
+import com.joint.gwt.client.ui.element.JointElementJS;
+import com.joint.gwt.client.ui.element.JointElementRect;
 
 /**
  * This class represents a JointJS member
@@ -247,7 +247,7 @@ public class JointMember<T extends Serializable> extends JointElementRect {
 
 	@Override
 	protected final native JointElementJS createJavaScriptObject()/*-{
-		var instance = this.@com.joint.gwt.client.ui.JointElementRect::getRect()();
+		var instance = this.@com.joint.gwt.client.ui.element.JointElementRect::getRect()();
 		return new $wnd.joint.shapes.org.Member({
 			size : {
 				width : instance.@com.joint.gwt.client.util.Rect::getWidth()(),
