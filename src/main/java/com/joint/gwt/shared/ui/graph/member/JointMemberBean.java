@@ -1,5 +1,6 @@
 package com.joint.gwt.shared.ui.graph.member;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import java.util.List;
  * 
  * @author Douglas Matheus de Souza
  */
-public abstract class JointMemberBean<T extends JointMemberBean<T>> {
+public abstract class JointMemberBean<T extends JointMemberBean<T>> implements Serializable {
 
 	private List<T> children = new ArrayList<>();
 
