@@ -33,9 +33,10 @@ public class JointGraph<T extends JointMemberBean<T>> extends Composite implemen
 	private JavaScriptObject graphJS;
 	private JavaScriptObject paperJS;
 	private JavaScriptObject paperScrollerJS;
-	private Map<JavaScriptObject, JointMember<T>> members = new HashMap<JavaScriptObject, JointMember<T>>();
+	//
 	private JointMember<T> rootMember;
 	private JointMember<T> selectedMember;
+	private Map<JavaScriptObject, JointMember<T>> members = new HashMap<JavaScriptObject, JointMember<T>>();
 
 	private float graphScale = 1;
 
@@ -97,7 +98,7 @@ public class JointGraph<T extends JointMemberBean<T>> extends Composite implemen
 		this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS = paperScroller;
 		//
 		if (rootMember != null) {
-			this.@com.joint.gwt.client.ui.graph.JointGraph::addMember(Lcom/joint/gwt/client/ui/graph/member/JointMember;Lcom/joint/gwt/client/ui/graph/member/JointMember;)(rootMember);
+			this.@com.joint.gwt.client.ui.graph.JointGraph::addMember(Lcom/joint/gwt/client/ui/graph/member/JointMember;Lcom/joint/gwt/client/ui/graph/member/JointMember;Z)(rootMember,true);
 		}
 	}-*/;
 
@@ -251,10 +252,11 @@ public class JointGraph<T extends JointMemberBean<T>> extends Composite implemen
 	 * 
 	 * @param newMember the new member
 	 * @param parentMember parent member to link
+	 * @param redraw if should redraw the graph after insert the new member
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public void addMember(JointMember<T> newMember, JointMember<T> parentMember) {
+	public void addMember(JointMember<T> newMember, JointMember<T> parentMember, boolean redraw) {
 		// Sets the graph's root member
 		if (rootMember == null) {
 			this.rootMember = newMember;
@@ -266,10 +268,10 @@ public class JointGraph<T extends JointMemberBean<T>> extends Composite implemen
 		// Maps the java object instance by the JavaScriptObject
 		this.members.put(newMember.getJS(), newMember);
 		// Draw the member in the graph
-		addMemberJS(newMember, parentMember);
+		addMemberJS(newMember, parentMember, redraw);
 	}
 
-	private native void addMemberJS(JointMember<T> newMember, JointMember<T> parentMember)/*-{
+	private native void addMemberJS(JointMember<T> newMember, JointMember<T> parentMember, boolean redraw)/*-{
 		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
 		var newMemberJS = newMember.@com.joint.gwt.client.ui.graph.member.JointMember::getJS()();
 		graph.addCell(newMemberJS);
@@ -279,7 +281,9 @@ public class JointGraph<T extends JointMemberBean<T>> extends Composite implemen
 			graph.addCell(link);
 		}
 		//
-		this.@com.joint.gwt.client.ui.graph.JointGraph::redraw()();
+		if (redraw) {
+			this.@com.joint.gwt.client.ui.graph.JointGraph::redraw()();
+		}
 	}-*/;
 
 	/**
@@ -287,7 +291,7 @@ public class JointGraph<T extends JointMemberBean<T>> extends Composite implemen
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	private native Element redraw()/*-{
+	public native Element redraw()/*-{
 		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
 		$wnd.joint.layout.DirectedGraph.layout(graph, {
 			setLinkVertices : true,
@@ -355,22 +359,22 @@ public class JointGraph<T extends JointMemberBean<T>> extends Composite implemen
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public final native void clear()/*-{
-		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
-		graph.resetCells([]);
-	}-*/;
+	public void clear() {
+		this.rootMember = null;
+		this.selectedMember = null;
+		this.members.clear();
+		zoomReal();
+		clearJS();
+	}
 
 	/**
-	 * Reset cells in the graph. Update all the cells in the graph in one bulk
+	 * Clear the graph removing all its members
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public final native void resetCells(JointMember<T>[] members)/*-{
+	private final native void clearJS()/*-{
 		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
-		//
-		if(members.length == 0){
-			graph.resetCells([]);
-		}
+		graph.resetCells([]);
 	}-*/;
 
 	/**
