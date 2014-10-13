@@ -72,7 +72,7 @@ public class JointGraph<T extends JointMemberBean<T>> extends Composite implemen
 		//Creates the graph
 		var graph = new $wnd.joint.dia.Graph;
 		//Creates the paperScroller
-		var paperScroller = new $wnd.joint.ui.PaperScroller();
+		var paperScroller = new $wnd.joint.ui.PaperScroller;
 		//Creates the paper
 		paperOptions["model"] = graph;
 		paperOptions["el"] = paperScroller.el;
@@ -357,7 +357,20 @@ public class JointGraph<T extends JointMemberBean<T>> extends Composite implemen
 	 */
 	public final native void clear()/*-{
 		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
-		graph.clear();
+		graph.resetCells([]);
+	}-*/;
+
+	/**
+	 * Reset cells in the graph. Update all the cells in the graph in one bulk
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public final native void resetCells(JointMember<T>[] members)/*-{
+		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
+		//
+		if(members.length == 0){
+			graph.resetCells([]);
+		}
 	}-*/;
 
 	/**
