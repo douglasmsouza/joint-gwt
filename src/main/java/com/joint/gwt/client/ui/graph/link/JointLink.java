@@ -16,7 +16,12 @@ public class JointLink {
 			target : {
 				id : targetJS.id
 			},
-			smooth : false
+			attrs : {
+				'.connection' : {
+					stroke : '#000',
+					'stroke-width' : 1
+				},
+			}
 		});
 	}-*/;
 }

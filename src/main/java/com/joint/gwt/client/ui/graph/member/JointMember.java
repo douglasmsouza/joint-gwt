@@ -271,9 +271,11 @@ public class JointMember<T extends JointBean<T>> extends JointElementRect {
 				width : instance.@com.joint.gwt.client.util.Rect::getWidth()(),
 				height : instance.@com.joint.gwt.client.util.Rect::getHeight()()
 			},
-			'.card' : {
-				rx : 0,
-				ry : 0
+			attrs : {
+				'.card' : {
+					rx : 0,
+					ry : 0
+				}
 			}
 		});
 	}-*/;
