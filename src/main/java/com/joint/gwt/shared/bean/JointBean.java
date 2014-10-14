@@ -1,19 +1,19 @@
-package com.joint.gwt.shared.ui.graph.member;
+package com.joint.gwt.shared.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class represents a JointMember as a bean for client-server operations
+ * This class represents a JointElement as a bean for client-server operations
  * 
  * @author Douglas Matheus de Souza
  */
-public abstract class JointMemberBean<T extends JointMemberBean<T>> implements Serializable {
+public abstract class JointBean<T extends JointBean<T>> implements Serializable {
 
 	private List<T> children = new ArrayList<>();
 
-	public JointMemberBean() {
+	public JointBean() {
 	}
 
 	public void addChild(T child) {

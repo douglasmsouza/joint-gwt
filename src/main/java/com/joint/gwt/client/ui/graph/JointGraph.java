@@ -21,7 +21,7 @@ import com.joint.gwt.client.ui.graph.paper.JointPaperOptions;
 import com.joint.gwt.client.util.Position;
 import com.joint.gwt.client.util.Rect;
 import com.joint.gwt.client.util.RectCalculator;
-import com.joint.gwt.shared.ui.graph.bean.JointBean;
+import com.joint.gwt.shared.bean.JointBean;
 
 /**
  * An implementation of joint.dia.Graph of JointJS library
