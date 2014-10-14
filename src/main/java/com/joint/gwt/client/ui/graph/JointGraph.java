@@ -131,6 +131,9 @@ public class JointGraph<T extends JointMemberBean<T>> extends Composite implemen
 				.extend({
 					template : elementView.@com.joint.gwt.client.ui.element.view.JointElementView::createTemplate()(),
 					initialize : function() {
+						//Calls the original function to initialize the element						
+						$wnd.joint.dia.ElementView.prototype.initialize.apply(this, arguments);
+						//Calls the java listener to initialize the java element
 						var javaMember = graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::getJointMemberFromJS(Lcom/google/gwt/core/client/JavaScriptObject;)(this.model);
 						elementView.@com.joint.gwt.client.ui.element.view.JointElementView::initialize(Lcom/joint/gwt/client/ui/element/JointElement;)(javaMember);
 					}
