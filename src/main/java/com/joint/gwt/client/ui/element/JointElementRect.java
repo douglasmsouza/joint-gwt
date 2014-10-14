@@ -12,12 +12,20 @@ public abstract class JointElementRect extends JointElement {
 	private Rect rect;
 
 	public JointElementRect(float width, float height) {
+		this(new Rect(width, height));
+	}
+
+	public JointElementRect(Rect rect) {
 		super();
-		this.rect = new Rect(width, height);
+		this.rect = rect;
 	}
 
 	public Rect getRect() {
 		return rect;
+	}
+	
+	public void setRect(Rect rect) {
+		this.rect = rect;
 	}
 
 }
