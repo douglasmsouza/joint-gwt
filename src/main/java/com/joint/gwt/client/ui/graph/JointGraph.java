@@ -340,6 +340,8 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * @author Douglas Matheus de Souza em 14/10/2014
 	 */
 	private void load(T member, JointMember<T> parentMemberJS, RectCalculator<T> rectCalculator) {
+		if (rectCalculator == null)
+			throw new IllegalArgumentException("The rectCalculator cannnot be null.");
 		/*Calculates the element rect*/
 		Rect rect = rectCalculator.calculateRect(member);
 		/*Creates the js element*/
