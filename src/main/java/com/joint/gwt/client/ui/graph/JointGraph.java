@@ -325,10 +325,13 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	public void load(T rootMember, RectCalculator<T> rectCalculator) {
 		/*Clear the graph*/
 		clear();
-		/*Load the new members*/
-		load(rootMember, null, rectCalculator);
-		/*Redraw the graph*/
-		redraw();
+		//
+		if (rootMember != null) {
+			/*Load the new members*/
+			load(rootMember, null, rectCalculator);
+			/*Redraw the graph*/
+			redraw();
+		}
 	}
 
 	/**
