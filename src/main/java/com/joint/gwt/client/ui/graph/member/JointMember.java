@@ -9,7 +9,7 @@ import com.joint.gwt.client.ui.element.JointElementJS;
 import com.joint.gwt.client.ui.element.JointElementRect;
 import com.joint.gwt.client.util.Rect;
 import com.joint.gwt.client.util.RectCalculator;
-import com.joint.gwt.shared.ui.graph.bean.JointBean;
+import com.joint.gwt.shared.bean.bean.JointBean;
 
 /**
  * This class represents a JointJS member
