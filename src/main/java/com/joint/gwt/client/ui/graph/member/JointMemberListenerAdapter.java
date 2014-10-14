@@ -2,9 +2,9 @@ package com.joint.gwt.client.ui.graph.member;
 
 import com.joint.gwt.client.ui.graph.JointGraph;
 import com.joint.gwt.client.util.Position;
-import com.joint.gwt.shared.ui.graph.member.JointMemberBean;
+import com.joint.gwt.shared.ui.graph.bean.JointBean;
 
-public class JointMemberListenerAdapter<T extends JointMemberBean<T>> implements JointMemberListener<T> {
+public class JointMemberListenerAdapter<T extends JointBean<T>> implements JointMemberListener<T> {
 
 	@Override
 	public void onPointerDown(JointGraph<T> graph, JointMember<T> member, Position graphPosition, Position pagePosition) {

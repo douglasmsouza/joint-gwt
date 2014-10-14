@@ -7,19 +7,29 @@ import com.google.gwt.dom.client.Style.TextDecoration;
 import com.joint.gwt.client.constants.TextAnchor;
 import com.joint.gwt.client.ui.element.JointElementJS;
 import com.joint.gwt.client.ui.element.JointElementRect;
-import com.joint.gwt.shared.ui.graph.member.JointMemberBean;
+import com.joint.gwt.client.util.Rect;
+import com.joint.gwt.client.util.RectCalculator;
+import com.joint.gwt.shared.ui.graph.bean.JointBean;
 
 /**
  * This class represents a JointJS member
  * 
  * @author Douglas Matheus de Souza
  */
-public class JointMember<T extends JointMemberBean<T>> extends JointElementRect {
+public class JointMember<T extends JointBean<T>> extends JointElementRect {
 
 	private T bean;
 
 	public JointMember(T bean, float width, float height) {
-		super(width, height);
+		this(bean, new Rect(width, height));
+	}
+
+	public JointMember(T bean, RectCalculator<T> rectCalculator) {
+		this(bean, rectCalculator.calculateRect(bean));
+	}
+
+	public JointMember(T bean, Rect rect) {
+		super(rect);
 		this.bean = bean;
 	}
 
@@ -230,20 +240,27 @@ public class JointMember<T extends JointMemberBean<T>> extends JointElementRect 
 		return getJS().getAttrInt("image/height");
 	}
 
-	public void setWidth(int width) {
+	public void setWidth(float width) {
 		getJS().setProp("size/width", width);
 	}
 
-	public int getWidth() {
+	public float getWidth() {
 		return getJS().getPropInt("size/width");
 	}
 
-	public void setHeight(int height) {
+	public void setHeight(float height) {
 		getJS().setProp("size/height", height);
 	}
 
-	public int getHeight() {
+	public float getHeight() {
 		return getJS().getPropInt("size/height");
+	}
+
+	@Override
+	public void setRect(Rect rect) {
+		super.setRect(rect);
+		setWidth(rect.getWidth());
+		setHeight(rect.getHeight());
 	}
 
 	@Override

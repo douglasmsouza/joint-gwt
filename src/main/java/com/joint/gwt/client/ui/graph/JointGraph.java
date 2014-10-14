@@ -19,7 +19,9 @@ import com.joint.gwt.client.ui.graph.member.JointMemberListener;
 import com.joint.gwt.client.ui.graph.member.JointMemberListenerAdapter;
 import com.joint.gwt.client.ui.graph.paper.JointPaperOptions;
 import com.joint.gwt.client.util.Position;
-import com.joint.gwt.shared.ui.graph.member.JointMemberBean;
+import com.joint.gwt.client.util.Rect;
+import com.joint.gwt.client.util.RectCalculator;
+import com.joint.gwt.shared.ui.graph.bean.JointBean;
 
 /**
  * An implementation of joint.dia.Graph of JointJS library
@@ -28,7 +30,7 @@ import com.joint.gwt.shared.ui.graph.member.JointMemberBean;
  * 
  * @author Douglas Matheus de Souza
  */
-public class JointGraph<T extends JointMemberBean<T>> extends Composite implements Iterable<JointMember<T>> {
+public class JointGraph<T extends JointBean<T>> extends Composite implements Iterable<JointMember<T>> {
 
 	private JavaScriptObject graphJS;
 	private JavaScriptObject paperJS;
@@ -98,7 +100,7 @@ public class JointGraph<T extends JointMemberBean<T>> extends Composite implemen
 		this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS = paperScroller;
 		//
 		if (rootMember != null) {
-			this.@com.joint.gwt.client.ui.graph.JointGraph::addMember(Lcom/joint/gwt/client/ui/graph/member/JointMember;Lcom/joint/gwt/client/ui/graph/member/JointMember;Z)(rootMember,true);
+			this.@com.joint.gwt.client.ui.graph.JointGraph::addMember(Lcom/joint/gwt/client/ui/graph/member/JointMember;Lcom/joint/gwt/client/ui/graph/member/JointMember;)(rootMember,null);
 		}
 	}-*/;
 
@@ -251,21 +253,43 @@ public class JointGraph<T extends JointMemberBean<T>> extends Composite implemen
 	}-*/;
 
 	/**
-	 * Add a new member to the graph
+	 * See
+	 * {@link JointGraph#addMember(JointMember, JointMember, boolean, boolean)}
 	 * 
-	 * @param newMember the new member
-	 * @param parentMember parent member to link
-	 * @param redraw if should redraw the graph after insert the new member
+	 * @author Douglas Matheus de Souza
+	 */
+	public void addMember(JointMember<T> newMember, JointMember<T> parentMember) {
+		addMember(newMember, parentMember, true, true);
+	}
+
+	/**
+	 * See
+	 * {@link JointGraph#addMember(JointMember, JointMember, boolean, boolean)}
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
 	public void addMember(JointMember<T> newMember, JointMember<T> parentMember, boolean redraw) {
+		addMember(newMember, parentMember, true, redraw);
+	}
+
+	/**
+	 * Add a new member to the graph
+	 * 
+	 * @param newMember the new member
+	 * @param parentMember parent member to link
+	 * @param addChildToParent true if should add the newMember to the
+	 *            parentMember's children list
+	 * @param redraw if should redraw the graph after insert the new member
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	private void addMember(JointMember<T> newMember, JointMember<T> parentMember, boolean addChildToParent, boolean redraw) {
 		// Sets the graph's root member
 		if (rootMember == null) {
 			this.rootMember = newMember;
 		}
 		// Associates the newMember to the parentMember
-		if (parentMember != null) {
+		if (parentMember != null && addChildToParent) {
 			parentMember.addChild(newMember);
 		}
 		// Maps the java object instance by the JavaScriptObject
@@ -288,6 +312,42 @@ public class JointGraph<T extends JointMemberBean<T>> extends Composite implemen
 			this.@com.joint.gwt.client.ui.graph.JointGraph::redraw()();
 		}
 	}-*/;
+
+	/**
+	 * Loads a graph based on the root member and its children
+	 * 
+	 * @param the root member
+	 * @param the rect calculator for width and height calculation of each
+	 *            member
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public void load(T rootMember, RectCalculator<T> rectCalculator) {
+		/*Clear the graph*/
+		clear();
+		/*Load the new members*/
+		load(rootMember, null, rectCalculator);
+		/*Redraw the graph*/
+		redraw();
+	}
+
+	/**
+	 * Loads the graph adding each element's children recursively
+	 * 
+	 * @author Douglas Matheus de Souza em 14/10/2014
+	 */
+	private void load(T member, JointMember<T> parentMemberJS, RectCalculator<T> rectCalculator) {
+		/*Calculates the element rect*/
+		Rect rect = rectCalculator.calculateRect(member);
+		/*Creates the js element*/
+		JointMember<T> memberJS = new JointMember<T>(member, rect);
+		/*Adds the element into the graph*/
+		addMember(memberJS, parentMemberJS, false, false);
+		/*Adds the element's children into the graph*/
+		for (T childBean : member.getChildren()) {
+			load(childBean, memberJS, rectCalculator);
+		}
+	}
 
 	/**
 	 * Redraw the graph and recalculate the positions of its members

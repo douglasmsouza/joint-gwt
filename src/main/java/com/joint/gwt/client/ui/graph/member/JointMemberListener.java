@@ -2,9 +2,9 @@ package com.joint.gwt.client.ui.graph.member;
 
 import com.joint.gwt.client.ui.graph.JointGraph;
 import com.joint.gwt.client.util.Position;
-import com.joint.gwt.shared.ui.graph.member.JointMemberBean;
+import com.joint.gwt.shared.ui.graph.bean.JointBean;
 
-public interface JointMemberListener<T extends JointMemberBean<T>> {
+public interface JointMemberListener<T extends JointBean<T>> {
 
 	/**
 	 * Handles the mouse down event
