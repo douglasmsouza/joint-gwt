@@ -277,19 +277,19 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @param newMember the new member
 	 * @param parentMember parent member to link
-	 * @param addChildToParent true if should add the newMember to the
+	 * @param associateParentAndChild true if should add the newMember to the
 	 *            parentMember's children list
 	 * @param redraw if should redraw the graph after insert the new member
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	private void addMember(JointMember<T> newMember, JointMember<T> parentMember, boolean addChildToParent, boolean redraw) {
+	private void addMember(JointMember<T> newMember, JointMember<T> parentMember, boolean associateParentAndChild, boolean redraw) {
 		// Sets the graph's root member
 		if (rootMember == null) {
 			this.rootMember = newMember;
 		}
 		// Associates the newMember to the parentMember
-		if (parentMember != null && addChildToParent) {
+		if (parentMember != null && associateParentAndChild) {
 			parentMember.addChild(newMember);
 		}
 		// Maps the java object instance by the JavaScriptObject

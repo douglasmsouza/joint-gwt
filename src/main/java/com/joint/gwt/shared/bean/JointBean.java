@@ -11,13 +11,24 @@ import java.util.List;
  */
 public abstract class JointBean<T extends JointBean<T>> implements Serializable {
 
+	private T parent;
 	private List<T> children = new ArrayList<>();
 
 	public JointBean() {
 	}
 
+	public T getParent() {
+		return parent;
+	}
+
+	public void setParent(T jointBean) {
+		this.parent = jointBean;
+	}
+
 	public void addChild(T child) {
 		children.add(child);
+		/*This is the parent of its child*/
+		child.setParent((T) this);
 	}
 
 	public List<T> getChildren() {
