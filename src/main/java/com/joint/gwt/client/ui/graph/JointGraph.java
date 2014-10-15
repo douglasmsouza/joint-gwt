@@ -10,7 +10,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.joint.gwt.client.ui.element.view.JointElementView;
@@ -455,13 +454,24 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	}
 
 	/**
-	 * Returns the graph as a JSON object
+	 * Removes a member and its links from the graph. Only remove if the member
+	 * is a leaf
 	 * 
-	 * @author Douglas Matheus de Souza
+	 * @param member the member to remove from the graph
+	 * 
+	 * @author Douglas Matheus de Souza em 15/10/2014
 	 */
-	public final native JSONObject toJSON()/*-{
-		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
-		return new @com.google.gwt.json.client.JSONObject::new(Lcom/google/gwt/core/client/JavaScriptObject;)(graph.toJSON());
+	public void removeLeaf(JointMember<T> member) {
+		if (!member.hasChildren()) {
+			removeLeafJS(member);
+			member.removeFromParent();
+			members.remove(member.getJS());
+		}
+	}
+
+	private native void removeLeafJS(JointMember<T> member)/*-{
+		var memberJS = member.@com.joint.gwt.client.ui.graph.member.JointMember::getJS()();
+		memberJS.remove();
 	}-*/;
 
 	private JointGraph<T> getInstance() {

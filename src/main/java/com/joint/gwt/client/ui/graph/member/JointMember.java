@@ -37,6 +37,14 @@ public class JointMember<T extends JointBean<T>> extends JointElementRect {
 		return bean;
 	}
 
+	public T getParent() {
+		return bean.getParent();
+	}
+
+	public void removeFromParent() {
+		bean.removeFromParent();
+	}
+
 	public void addChild(JointMember<T> child) {
 		bean.addChild(child.getBean());
 	}
@@ -279,4 +287,5 @@ public class JointMember<T extends JointBean<T>> extends JointElementRect {
 			}
 		});
 	}-*/;
+
 }

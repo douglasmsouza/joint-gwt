@@ -31,6 +31,17 @@ public abstract class JointBean<T extends JointBean<T>> implements Serializable 
 		child.setParent((T) this);
 	}
 
+	public void removeChild(T child) {
+		children.remove(child);
+		child.setParent(null);
+	}
+
+	public void removeFromParent() {
+		if (parent != null) {
+			parent.removeChild((T) this);
+		}
+	}
+
 	public List<T> getChildren() {
 		return children;
 	}
