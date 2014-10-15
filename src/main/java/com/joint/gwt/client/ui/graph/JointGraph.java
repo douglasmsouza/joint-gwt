@@ -135,7 +135,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 						//Calls the original function to initialize the element						
 						$wnd.joint.dia.ElementView.prototype.initialize.apply(this, arguments);
 						//Calls the java listener to initialize the java element
-						var javaMember = graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::getJointMemberFromJS(Lcom/google/gwt/core/client/JavaScriptObject;)(this.model);
+						var javaMember = graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::getMemberFromJS(Lcom/google/gwt/core/client/JavaScriptObject;)(this.model);
 						elementView.@com.joint.gwt.client.ui.element.view.JointElementView::initialize(Lcom/joint/gwt/client/ui/element/JointElement;)(javaMember);
 					}
 				});
@@ -203,7 +203,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 						});
 	}-*/;
 
-	private JointMember<T> getJointMemberFromJS(JavaScriptObject javaScriptObject) {
+	private JointMember<T> getMemberFromJS(JavaScriptObject javaScriptObject) {
 		return members.get(javaScriptObject);
 	}
 
@@ -215,7 +215,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	private native void fireEventJS(JavaScriptObject model, JavaScriptObject event, JointMemberListener<T> listener)/*-{
 		var graphInstance = this.@com.joint.gwt.client.ui.graph.JointGraph::getInstance()();
 		if (@com.joint.gwt.client.ui.graph.JointGraph::isMember(Lcom/google/gwt/core/client/JavaScriptObject;)(model)) {
-			var javaMember = graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::getJointMemberFromJS(Lcom/google/gwt/core/client/JavaScriptObject;)(model);
+			var javaMember = graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::getMemberFromJS(Lcom/google/gwt/core/client/JavaScriptObject;)(model);
 			var graphPosition = @com.joint.gwt.client.util.Position::create(II)(event.offsetX,event.offsetY);
 			var pagePosition = @com.joint.gwt.client.util.Position::create(II)(event.pageX,event.pageY);
 			graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::fireEvent(Ljava/lang/String;Lcom/joint/gwt/client/ui/graph/member/JointMember;Lcom/joint/gwt/client/util/Position;Lcom/joint/gwt/client/util/Position;Lcom/joint/gwt/client/ui/graph/member/JointMemberListener;)(event.type,javaMember,graphPosition,pagePosition,listener);
