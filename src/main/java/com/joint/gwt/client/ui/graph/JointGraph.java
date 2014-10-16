@@ -490,4 +490,8 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	public JointMember<T> getSelectedMember() {
 		return selectedMember;
 	}
+	
+	public boolean isEmpty(){
+		return rootMember == null;
+	}
 }
