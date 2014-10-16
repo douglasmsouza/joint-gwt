@@ -19,7 +19,7 @@ public class JointLink {
 			attrs : {
 				'.connection' : {
 					stroke : '#000',
-					'stroke-width' : 1
+					'stroke-width' : 0.5
 				},
 			}
 		});

@@ -219,11 +219,11 @@ public class JointMember<T extends JointBean<T>> extends JointElementRect {
 		return getJS().getAttrString(".card/stroke");
 	}
 
-	public void setStrokeWidth(int width) {
+	public void setStrokeWidth(float width) {
 		getJS().setAttr(".card/stroke-width", width);
 	}
 
-	public int getStrokeWidth() {
+	public float getStrokeWidth() {
 		return getJS().getAttrInt(".card/stroke-width");
 	}
 
