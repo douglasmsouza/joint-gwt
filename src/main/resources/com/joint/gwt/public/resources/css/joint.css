@@ -48,10 +48,36 @@ path:not([d]) {
    stroke-opacity: .5;
 }
 */
-[magnet=true]:not (.element ) {
-	cursor: crosshair;
-}
+[
+magnet
+=
+true
+]
 
+
+:not
+
+ 
+
+(
+.element
+
+ 
+
+)
+{
+cursor
+
+
+:
+
+ 
+
+crosshair
+
+
+;
+}
 [magnet=true]:not (.element ):hover {
 	opacity: .7;
 }
@@ -246,9 +272,13 @@ Do not allow adding new vertices: .connection-wrap { pointer-events: none; }
 }
 
 .paper-scroller {
-   background-color: lightgray;
+	background-color: lightgray;
 }
 
 .paper-scroller svg {
-   background-color: white;
+	background-color: white;
+}
+
+.connection, .connection-wrap {
+	pointer-events: none;
 }

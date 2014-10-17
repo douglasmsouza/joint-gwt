@@ -9,7 +9,7 @@ public class JointLink {
 		var sourceJS = source.@com.joint.gwt.client.ui.element.JointElement::getJS()();
 		var targetJS = target.@com.joint.gwt.client.ui.element.JointElement::getJS()();
 		//
-		return new $wnd.joint.shapes.org.Arrow({
+		return new $wnd.joint.dia.Link({
 			source : {
 				id : sourceJS.id
 			},
