@@ -494,8 +494,4 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	public boolean isEmpty() {
 		return rootMember == null;
 	}
-
-	public JavaScriptObject getGraphJS() {
-		return graphJS;
-	}
 }
