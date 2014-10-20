@@ -33,6 +33,10 @@ public class JointMember<T extends JointBean<T>> extends JointElementRect {
 		this.bean = bean;
 	}
 
+	public void setBean(T bean) {
+		this.bean = bean;
+	}
+
 	public T getBean() {
 		return bean;
 	}
