@@ -295,21 +295,21 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		paper
 				.on(
 						'blank:pointerdown',
-						function(cellView, evt) {
+						function(evt) {
 							graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::firePaperBlankAreaEventJS(Lcom/google/gwt/core/client/JavaScriptObject;Lcom/joint/gwt/client/ui/graph/paper/JointPaperListener;)(evt, listener);
 						});
 		//
 		paper
 				.on(
 						'blank:pointerdblclick',
-						function(cellView, evt) {
+						function(evt) {
 							graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::firePaperBlankAreaEventJS(Lcom/google/gwt/core/client/JavaScriptObject;Lcom/joint/gwt/client/ui/graph/paper/JointPaperListener;)(evt, listener);
 						});
 		//
 		paper
 				.on(
 						'blank:pointerclick',
-						function(cellView, evt) {
+						function(evt) {
 							graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::firePaperBlankAreaEventJS(Lcom/google/gwt/core/client/JavaScriptObject;Lcom/joint/gwt/client/ui/graph/paper/JointPaperListener;)(evt, listener);
 						});
 	}-*/;
@@ -568,6 +568,12 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 			removeLeafJS(member);
 			member.removeFromParent();
 			members.remove(member.getJS());
+		}
+		/*Selected member is null*/
+		this.selectedMember = null;
+		/*if is excluding the rootMember, sets the root to null*/
+		if (member == rootMember) {
+			this.rootMember = null;
 		}
 	}
 
