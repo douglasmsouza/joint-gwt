@@ -432,8 +432,8 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 			load(rootBean, null, rectCalculator);
 			/*Redraw the graph*/
 			redrawJS();
-			/*Center the graph relative to the root member*/
-			center(rootMember);
+			/*Scroll the graph relative to the root member*/
+			scrollTo(rootMember);
 		}
 	}
 
