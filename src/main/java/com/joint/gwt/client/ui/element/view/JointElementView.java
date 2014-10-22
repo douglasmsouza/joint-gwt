@@ -9,9 +9,19 @@ import com.joint.gwt.client.ui.element.JointElement;
  */
 public class JointElementView<T extends JointElement> {
 
+	/**
+	 * Execute when a element is added to a view
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
 	public void initialize(T element) {
 	}
 
+	/**
+	 * Execute when a element is added to a view
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
 	public String createTemplate() {
 		return null;
 	}
