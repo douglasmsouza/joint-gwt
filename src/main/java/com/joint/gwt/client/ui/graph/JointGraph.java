@@ -9,7 +9,6 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.BrowserEvents;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.joint.gwt.client.ui.element.JointElement;
@@ -418,28 +417,30 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	/**
 	 * Loads a graph based on the root member and its children
 	 * 
-	 * @param the root member
-	 * @param the rect calculator for width and height calculation of each
-	 *            member
+	 * @param rootBean the root member
+	 * @param rectCalculator the rect calculator for width and height
+	 *            calculation of each member
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public void load(T rootMember, RectCalculator<T> rectCalculator) {
+	public void load(T rootBean, RectCalculator<T> rectCalculator) {
 		/*Clear the graph*/
 		clear();
 		//
-		if (rootMember != null) {
+		if (rootBean != null) {
 			/*Load the new members*/
-			load(rootMember, null, rectCalculator);
+			load(rootBean, null, rectCalculator);
 			/*Redraw the graph*/
-			redraw(true);
+			redrawJS();
+			/*Center the graph relative to the root member*/
+			center(rootMember);
 		}
 	}
 
 	/**
 	 * Loads the graph adding each element's children recursively
 	 * 
-	 * @author Douglas Matheus de Souza em 14/10/2014
+	 * @author Douglas Matheus de Souza
 	 */
 	private void load(T member, JointMember<T> parentMemberJS, RectCalculator<T> rectCalculator) {
 		if (rectCalculator == null)
@@ -459,24 +460,27 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	/**
 	 * Redraw the graph and recalculate the positions of its members
 	 * 
-	 * @param centerAfterRedraw true if should center the graph relative to the
-	 *            selected member or the root member. Center relative to the
-	 *            selected member if its not null, instead try to center
-	 *            relative to the root member
+	 * @param preserveScrollPosition true if should preserve the scroll position
+	 *            after redraw the graph. If false, the graph will be positioned
+	 *            at top-left 0
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public void redraw(boolean centerAfterRedraw) {
+	public void redraw(boolean preserveScrollPosition) {
+		int[] scrollPosition = preserveScrollPosition ? getScrollPosition() : null;
+		//
 		redrawJS();
 		//
-		if (centerAfterRedraw) {
-			JointMember<T> centerRelativeToMember = selectedMember != null ? selectedMember : rootMember;
-			if (centerRelativeToMember != null) {
-				center(centerRelativeToMember);
-			}
+		if (scrollPosition != null) {
+			scrollTo(scrollPosition);
 		}
 	};
 
+	/**
+	 * Redraw the graph using the JointJS DirectedGraph layout
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
 	private native void redrawJS()/*-{
 		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
 		$wnd.joint.layout.DirectedGraph.layout(graph, {
@@ -531,6 +535,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	}
 
 	/**
+	 * 
 	 * Fits the graph to its content
 	 * 
 	 * @author Douglas Matheus de Souza
@@ -578,7 +583,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @param member the member to remove from the graph
 	 * 
-	 * @author Douglas Matheus de Souza em 15/10/2014
+	 * @author Douglas Matheus de Souza
 	 */
 	public void removeLeaf(JointMember<T> member) {
 		if (!member.hasChildren()) {
@@ -608,34 +613,121 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		return members.values().iterator();
 	}
 
+	/**
+	 * Return the root member
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
 	public JointMember<T> getRootMember() {
 		return rootMember;
 	}
 
+	/**
+	 * Return the selected member
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
 	public JointMember<T> getSelectedMember() {
 		return selectedMember;
 	}
 
+	/**
+	 * Return true if the graph do not have any members
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
 	public boolean isEmpty() {
 		return rootMember == null;
 	}
 
+	/**
+	 * Center the graph content
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
 	public native void center()/*-{
 		var paperScrollerJS = this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS;
 		paperScrollerJS.center();
 	}-*/;
 
+	/**
+	 * Center the graph content relative to xy position
+	 * 
+	 * @param x horizontal position
+	 * @param y vertical position
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
 	public native void center(int x, int y)/*-{
 		var paperScrollerJS = this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS;
 		paperScrollerJS.center(x, y);
 	}-*/;
 
+	/**
+	 * Center the graph content relative to xy position
+	 * 
+	 * @param xy horizontal and vertical position
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
 	public void center(int[] xy) {
 		center(xy[0], xy[1]);
 	}
 
+	/**
+	 * Center the graph content relative to the xy position of the element
+	 * 
+	 * @param relativeTo the element that contains the xy position
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
 	public void center(JointElement relativeTo) {
 		center(relativeTo.getXY());
 	}
 
+	/**
+	 * Scroll the graph to xy position
+	 * 
+	 * @param x horizontal position
+	 * @param y vertical position
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public native void scrollTo(int x, int y)/*-{
+		var paperScrollerJS = this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS;
+		paperScrollerJS.scrollLeft = x;
+		paperScrollerJS.scrollTop = y;
+	}-*/;
+
+	/**
+	 * Scroll the graph to xy position
+	 * 
+	 * @param xy horizontal and vertical position
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public void scrollTo(int[] xy) {
+		scrollTo(xy[0], xy[1]);
+	}
+
+	/**
+	 * Scroll the graph to the xy position of the element
+	 * 
+	 * @param relativeTo the element that contains the xy position
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public void scrollTo(JointElement relativeTo) {
+		scrollTo(relativeTo.getXY());
+	}
+
+	/**
+	 * Return the graph scroll position
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public native int[] getScrollPosition()/*-{
+		var paperScrollerJS = this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS;
+		return [paperScrollerJS.scrollLeft, paperScrollerJS.scrollTop];
+	}-*/;
 }

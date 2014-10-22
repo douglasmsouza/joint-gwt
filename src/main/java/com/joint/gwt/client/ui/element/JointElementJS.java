@@ -78,7 +78,7 @@ public class JointElementJS extends JavaScriptObject {
 	/**
 	 * Returns the XY position of this element
 	 * 
-	 * @author Douglas Matheus de Souza em 02/10/2014
+	 * @author Douglas Matheus de Souza
 	 */
 	public final native int[] getXY()/*-{
 		var box = this.getBBox();
