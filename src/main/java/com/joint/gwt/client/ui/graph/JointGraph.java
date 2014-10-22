@@ -12,6 +12,7 @@ import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.joint.gwt.client.ui.element.JointElement;
 import com.joint.gwt.client.ui.element.view.JointElementView;
 import com.joint.gwt.client.ui.graph.member.JointMember;
 import com.joint.gwt.client.ui.graph.member.JointMemberListener;
@@ -410,7 +411,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		}
 		//
 		if (redraw) {
-			this.@com.joint.gwt.client.ui.graph.JointGraph::redraw()();
+			this.@com.joint.gwt.client.ui.graph.JointGraph::redraw(Z)(true);
 		}
 	}-*/;
 
@@ -431,7 +432,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 			/*Load the new members*/
 			load(rootMember, null, rectCalculator);
 			/*Redraw the graph*/
-			redraw();
+			redraw(true);
 		}
 	}
 
@@ -458,9 +459,25 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	/**
 	 * Redraw the graph and recalculate the positions of its members
 	 * 
+	 * @param centerAfterRedraw true if should center the graph relative to the
+	 *            selected member or the root member. Center relative to the
+	 *            selected member if its not null, instead try to center
+	 *            relative to the root member
+	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public native Element redraw()/*-{
+	public void redraw(boolean centerAfterRedraw) {
+		redrawJS();
+		//
+		if (centerAfterRedraw) {
+			JointMember<T> centerRelativeToMember = selectedMember != null ? selectedMember : rootMember;
+			if (centerRelativeToMember != null) {
+				center(centerRelativeToMember);
+			}
+		}
+	};
+
+	private native void redrawJS()/*-{
 		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
 		$wnd.joint.layout.DirectedGraph.layout(graph, {
 			setLinkVertices : true,
@@ -601,6 +618,24 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 
 	public boolean isEmpty() {
 		return rootMember == null;
+	}
+
+	public native void center()/*-{
+		var paperScrollerJS = this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS;
+		paperScrollerJS.center();
+	}-*/;
+
+	public native void center(int x, int y)/*-{
+		var paperScrollerJS = this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS;
+		paperScrollerJS.center(x, y);
+	}-*/;
+
+	public void center(int[] xy) {
+		center(xy[0], xy[1]);
+	}
+
+	public void center(JointElement relativeTo) {
+		center(relativeTo.getXY());
 	}
 
 }
