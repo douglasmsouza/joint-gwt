@@ -41,6 +41,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	private Map<JavaScriptObject, JointMember<T>> members = new HashMap<JavaScriptObject, JointMember<T>>();
 
 	private float graphScale = 1;
+	private String selectedColor = "#3498DB";
 
 	public JointGraph(final JointPaperOptions paperOptions) {
 		this(paperOptions, null);
@@ -55,7 +56,15 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 				//
 				addListener(new JointMemberListenerAdapter<T>() {
 					public void onClick(JointGraph<T> graph, JointMember<T> member, Position graphPosition, Position pagePosition) {
-						JointGraph.this.selectedMember = member;
+						/*Update the members colors with its original color*/
+						for (JointMember<T> m : graph) {
+							String originalColor = m.getJS().getPropString("originalColor");
+							if (originalColor != null) {
+								m.setFillColor(originalColor);
+							}
+						}
+						//
+						select(member);
 					};
 				});
 			}
@@ -730,4 +739,49 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		var paperScrollerJS = this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS;
 		return [paperScrollerJS.el.scrollLeft, paperScrollerJS.el.scrollTop];
 	}-*/;
+
+	/**
+	 * Sets the background color for the selected member
+	 * 
+	 * @author Douglas Matheus de Souza em 23/10/2014
+	 */
+	public void setSelectedColor(String selectedColor) {
+		this.selectedColor = selectedColor;
+		/*Sets the current selected member background color*/
+		if (selectedMember != null) {
+			selectedMember.setFillColor(selectedColor);
+		}
+	}
+
+	/**
+	 * Select a member an scroll the graph view to the member's position
+	 * 
+	 * @param member the member to select
+	 * @param scrollGraphView if should scroll the graph's view into the element
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public void select(JointMember<T> member, boolean scrollGraphView) {
+		select(member);
+		//
+		if (scrollGraphView) {
+			scrollTo(member);
+		}
+	}
+
+	/**
+	 * Select a member an scroll the graph view to the member's position
+	 * 
+	 * @param member the member to select
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public void select(JointMember<T> member) {
+		this.selectedMember = member;
+		/*Store the original color of the member*/
+		member.getJS().setProp("originalColor", member.getFillColor());
+		/*Sets the new color*/
+		member.setFillColor(selectedColor);
+	}
+
 }
