@@ -695,8 +695,8 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 */
 	public native void scrollTo(int x, int y)/*-{
 		var paperScrollerJS = this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS;
-		paperScrollerJS.scrollLeft = x;
-		paperScrollerJS.scrollTop = y;
+		paperScrollerJS.el.scrollLeft = x;
+		paperScrollerJS.el.scrollTop = y;
 	}-*/;
 
 	/**
@@ -728,6 +728,6 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 */
 	public native int[] getScrollPosition()/*-{
 		var paperScrollerJS = this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS;
-		return [paperScrollerJS.scrollLeft, paperScrollerJS.scrollTop];
+		return [paperScrollerJS.el.scrollLeft, paperScrollerJS.el.scrollTop];
 	}-*/;
 }
