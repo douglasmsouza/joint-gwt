@@ -378,8 +378,8 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public void addMember(JointMember<T> newMember, JointMember<T> parentMember, boolean redraw) {
-		addMember(newMember, parentMember, true, redraw);
+	public void addMember(JointMember<T> newMember, JointMember<T> parentMember, boolean autoLayout) {
+		addMember(newMember, parentMember, true, autoLayout);
 	}
 
 	/**
@@ -389,11 +389,11 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * @param parentMember parent member to link
 	 * @param associateParentAndChild true if should add the newMember to the
 	 *            parentMember's children list
-	 * @param redraw if should redraw the graph after insert the new member
+	 * @param autoLayout if should automatic calculate the graph's layout after insert the new member
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	private void addMember(JointMember<T> newMember, JointMember<T> parentMember, boolean associateParentAndChild, boolean redraw) {
+	private void addMember(JointMember<T> newMember, JointMember<T> parentMember, boolean associateParentAndChild, boolean autoLayout) {
 		// Sets the graph's root member
 		if (rootMember == null) {
 			this.rootMember = newMember;
@@ -405,10 +405,10 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		// Maps the java object instance by the JavaScriptObject
 		this.members.put(newMember.getJS(), newMember);
 		// Draw the member in the graph
-		addMemberJS(newMember, parentMember, redraw);
+		addMemberJS(newMember, parentMember, autoLayout);
 	}
 
-	private native void addMemberJS(JointMember<T> newMember, JointMember<T> parentMember, boolean redraw)/*-{
+	private native void addMemberJS(JointMember<T> newMember, JointMember<T> parentMember, boolean autoLayout)/*-{
 		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
 		var newMemberJS = newMember.@com.joint.gwt.client.ui.graph.member.JointMember::getJS()();
 		graph.addCell(newMemberJS);
@@ -418,8 +418,8 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 			graph.addCell(link);
 		}
 		//
-		if (redraw) {
-			this.@com.joint.gwt.client.ui.graph.JointGraph::redraw(Z)(true);
+		if (autoLayout) {
+			this.@com.joint.gwt.client.ui.graph.JointGraph::autoLayout(Z)(true);
 		}
 	}-*/;
 
@@ -440,7 +440,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 			/*Load the new members*/
 			load(rootBean, null, rectCalculator);
 			/*Redraw the graph*/
-			redrawJS();
+			autoLayoutJS();
 			/*Scroll the graph relative to the root member*/
 			scrollTo(rootMember);
 		}
@@ -475,10 +475,10 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public void redraw(boolean preserveScrollPosition) {
+	public void autoLayout(boolean preserveScrollPosition) {
 		int[] scrollPosition = preserveScrollPosition ? getScrollPosition() : null;
 		//
-		redrawJS();
+		autoLayoutJS();
 		//
 		if (scrollPosition != null) {
 			scrollTo(scrollPosition);
@@ -490,7 +490,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	private native void redrawJS()/*-{
+	private native void autoLayoutJS()/*-{
 		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
 		$wnd.joint.layout.DirectedGraph.layout(graph, {
 			setLinkVertices : true,
