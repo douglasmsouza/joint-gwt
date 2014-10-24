@@ -422,25 +422,38 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	}-*/;
 
 	/**
+	 * See {@link JointGraph#load(JointBean, RectCalculator, boolean)}
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public void load(T rootBean, RectCalculator<T> rectCalculator) {
+		load(rootBean, rectCalculator, true);
+	}
+
+	/**
 	 * Loads a graph based on the root member and its children
 	 * 
 	 * @param rootBean the root member
 	 * @param rectCalculator the rect calculator for width and height
 	 *            calculation of each member
+	 * @param autoLayout if should automatic calculate the graph's layout
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public void load(T rootBean, RectCalculator<T> rectCalculator) {
+	public void load(T rootBean, RectCalculator<T> rectCalculator, boolean autoLayout) {
 		/*Clear the graph*/
 		clear();
 		//
 		if (rootBean != null) {
 			/*Load the new members*/
 			load(rootBean, null, rectCalculator);
-			/*Redraw the graph*/
-			updateLayoutJS();
-			/*Scroll the graph relative to the root member*/
-			scrollTo(rootMember);
+			//
+			if (autoLayout) {
+				/*Redraw the graph*/
+				updateLayoutJS();
+				/*Scroll the graph relative to the root member*/
+				scrollTo(rootMember);
+			}
 		}
 	}
 
