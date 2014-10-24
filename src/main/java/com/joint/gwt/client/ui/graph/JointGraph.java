@@ -419,7 +419,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		}
 		//
 		if (autoLayout) {
-			this.@com.joint.gwt.client.ui.graph.JointGraph::autoLayout(Z)(true);
+			this.@com.joint.gwt.client.ui.graph.JointGraph::updateLayout(Z)(true);
 		}
 	}-*/;
 
@@ -440,7 +440,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 			/*Load the new members*/
 			load(rootBean, null, rectCalculator);
 			/*Redraw the graph*/
-			autoLayoutJS();
+			updateLayoutJS();
 			/*Scroll the graph relative to the root member*/
 			scrollTo(rootMember);
 		}
@@ -475,10 +475,10 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public void autoLayout(boolean preserveScrollPosition) {
+	public void updateLayout(boolean preserveScrollPosition) {
 		int[] scrollPosition = preserveScrollPosition ? getScrollPosition() : null;
 		//
-		autoLayoutJS();
+		updateLayoutJS();
 		//
 		if (scrollPosition != null) {
 			scrollTo(scrollPosition);
@@ -490,7 +490,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	private native void autoLayoutJS()/*-{
+	private native void updateLayoutJS()/*-{
 		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
 		$wnd.joint.layout.DirectedGraph.layout(graph, {
 			setLinkVertices : true,
