@@ -207,31 +207,49 @@ public class JointMember<T extends JointBean<T>> extends JointElementRect {
 		setRankPositionY(y);
 	}
 
-	public void setFillColor(String color) {
-		getJS().setAttr(".card/fill", color);
+	public void setBackgroundColor(String color) {
+		setBackgroundColor(color, false);
 	}
 
-	public String getFillColor() {
+	/**
+	 * @param temporaryColor true if is color change is temporary. If true it
+	 *            wont change the originalColor attribute
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public void setBackgroundColor(String color, boolean temporaryColor) {
+		getJS().setAttr(".card/fill", color);
+		//
+		if (!temporaryColor) {
+			getJS().setProp("originalColor", color);
+		}
+	}
+
+	public String getBackgroundColor() {
 		return getJS().getAttrString(".card/fill");
 	}
 
-	public void setStrokeColor(String color) {
+	public String getOriginalBackgroundColor() {
+		return getJS().getPropString("originalColor");
+	}
+
+	public void setBorderColor(String color) {
 		getJS().setAttr(".card/stroke", color);
 	}
 
-	public String getStrokeColor() {
+	public String getBorderColor() {
 		return getJS().getAttrString(".card/stroke");
 	}
 
-	public void setStrokeWidth(float width) {
+	public void setBorderWidth(float width) {
 		getJS().setAttr(".card/stroke-width", width);
 	}
 
-	public float getStrokeWidth() {
+	public float getBorderWidth() {
 		return getJS().getAttrInt(".card/stroke-width");
 	}
 
-	public void setStrokeRadius(int radius) {
+	public void setBorderRadius(int radius) {
 		getJS().setAttr(".card/rx", radius);
 		getJS().setAttr(".card/ry", radius);
 	}

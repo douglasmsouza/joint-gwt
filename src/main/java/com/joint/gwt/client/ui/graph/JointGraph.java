@@ -58,10 +58,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 					public void onClick(JointGraph<T> graph, JointMember<T> member, Position graphPosition, Position pagePosition) {
 						/*Update the members colors with its original color*/
 						for (JointMember<T> m : graph) {
-							String originalColor = m.getJS().getPropString("originalColor");
-							if (originalColor != null) {
-								m.setFillColor(originalColor);
-							}
+							m.setBackgroundColor(m.getOriginalBackgroundColor(), true);
 						}
 						//
 						select(member);
@@ -389,7 +386,8 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * @param parentMember parent member to link
 	 * @param associateParentAndChild true if should add the newMember to the
 	 *            parentMember's children list
-	 * @param autoLayout if should automatic calculate the graph's layout after insert the new member
+	 * @param autoLayout if should automatic calculate the graph's layout after
+	 *            insert the new member
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
@@ -749,7 +747,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		this.selectedColor = selectedColor;
 		/*Sets the current selected member background color*/
 		if (selectedMember != null) {
-			selectedMember.setFillColor(selectedColor);
+			selectedMember.setBackgroundColor(selectedColor, true);
 		}
 	}
 
@@ -778,10 +776,8 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 */
 	public void select(JointMember<T> member) {
 		this.selectedMember = member;
-		/*Store the original color of the member*/
-		member.getJS().setProp("originalColor", member.getFillColor());
 		/*Sets the new color*/
-		member.setFillColor(selectedColor);
+		member.setBackgroundColor(selectedColor, true);
 	}
 
 }
