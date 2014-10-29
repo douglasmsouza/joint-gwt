@@ -11,20 +11,12 @@ public final class JointPaperOptions extends JavaScriptObject {
 	protected JointPaperOptions() {
 	}
 
-	public native void setWidth(int width)/*-{
+	public native void setWidth(Object width)/*-{
 		this.width = width;
 	}-*/;
 
-	public native void setHeight(int height)/*-{
+	public native void setHeight(Object height)/*-{
 		this.height = height;
-	}-*/;
-
-	public native int getWidth()/*-{
-		return this.width;
-	}-*/;
-
-	public native int getHeight()/*-{
-		return this.height;
 	}-*/;
 
 	public native void setGridSize(int gridSize)/*-{
@@ -35,11 +27,11 @@ public final class JointPaperOptions extends JavaScriptObject {
 		this.perpendicularLinks = perpendicularLinks;
 	}-*/;
 
-	public native void setScrollerWidth(int scrollerWidth)/*-{
+	public native void setScrollerWidth(Object scrollerWidth)/*-{
 		this.scrollerWidth = scrollerWidth;
 	}-*/;
 
-	public native void setScrollerHeight(int scrollerHeight)/*-{
+	public native void setScrollerHeight(Object scrollerHeight)/*-{
 		this.scrollerHeight = scrollerHeight;
 	}-*/;
 

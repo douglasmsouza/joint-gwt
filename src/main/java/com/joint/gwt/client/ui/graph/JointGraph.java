@@ -96,7 +96,15 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 			height : paperOptions.scrollerHeight
 		});
 		//Initiate panning when the user grabs the blank area of the paper.
-		paper.on('blank:pointerdown', paperScroller.startPanning);
+		//paper.on('blank:pointerdown', paperScroller.startPanning);
+		//Initialize the selection view
+		var selection = new $wnd.Backbone.Collection;
+		var selectionView = new $wnd.joint.ui.SelectionView({
+			paper : paper,
+			graph : graph,
+			model : selection
+		});
+		paper.on('blank:pointerdown', selectionView.startSelecting);
 		//Bind the paper into the container
 		var containerElement = $doc.getElementById(containerId);
 		containerElement.appendChild(paperScroller.render().el);
@@ -505,6 +513,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
 		$wnd.joint.layout.DirectedGraph.layout(graph, {
 			setLinkVertices : true,
+			setTransformPositions: true,
 			nodeSep : 50
 		});
 	}-*/;
