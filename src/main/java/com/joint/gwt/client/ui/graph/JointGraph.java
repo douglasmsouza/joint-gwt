@@ -48,8 +48,11 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	}
 
 	public JointGraph(final JointPaperOptions paperOptions, final T rootMember) {
-		initWidget(new SimplePanel());
-
+		SimplePanel contentPanel = new SimplePanel();
+		contentPanel.setWidth("100%");
+		contentPanel.setHeight("100%");
+		initWidget(contentPanel);
+		//
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			public void execute() {
 				initGraphJS(getElement().getId(), paperOptions, rootMember);
@@ -95,16 +98,20 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 			width : paperOptions.scrollerWidth,
 			height : paperOptions.scrollerHeight
 		});
-		//Initiate panning when the user grabs the blank area of the paper.
-		//paper.on('blank:pointerdown', paperScroller.startPanning);
-		//Initialize the selection view
-		var selection = new $wnd.Backbone.Collection;
-		var selectionView = new $wnd.joint.ui.SelectionView({
-			paper : paper,
-			graph : graph,
-			model : selection
-		});
-		paper.on('blank:pointerdown', selectionView.startSelecting);
+		//
+		if (paperOptions.allowSelection) {
+			//Initialize the selection view
+			var selection = new $wnd.Backbone.Collection;
+			var selectionView = new $wnd.joint.ui.SelectionView({
+				paper : paper,
+				graph : graph,
+				model : selection
+			});
+			paper.on('blank:pointerdown', selectionView.startSelecting);
+		} else {
+			//Initiate panning when the user grabs the blank area of the paper.
+			paper.on('blank:pointerdown', paperScroller.startPanning);
+		}
 		//Bind the paper into the container
 		var containerElement = $doc.getElementById(containerId);
 		containerElement.appendChild(paperScroller.render().el);
@@ -513,7 +520,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
 		$wnd.joint.layout.DirectedGraph.layout(graph, {
 			setLinkVertices : true,
-			setTransformPositions: true,
+			setTransformPositions : true,
 			nodeSep : 50
 		});
 	}-*/;

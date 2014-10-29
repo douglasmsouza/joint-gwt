@@ -35,4 +35,8 @@ public final class JointPaperOptions extends JavaScriptObject {
 		this.scrollerHeight = scrollerHeight;
 	}-*/;
 
+	public native void setAllowSelection(boolean allowSelection)/*-{
+		this.allowSelection = allowSelection;
+	}-*/;
+
 }
