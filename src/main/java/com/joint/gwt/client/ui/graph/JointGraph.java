@@ -107,7 +107,14 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 				graph : graph,
 				model : selection
 			});
-			paper.on('blank:pointerdown', selectionView.startSelecting);
+			paper.on('blank:pointerdown', function(event) {
+				if (event.ctrlKey) {
+					//Select the content if CTRL key is pressed
+					selectionView.startSelecting(event);
+				} else {
+					paperScroller.startPanning(event);
+				}
+			});
 		} else {
 			//Initiate panning when the user grabs the blank area of the paper.
 			paper.on('blank:pointerdown', paperScroller.startPanning);
