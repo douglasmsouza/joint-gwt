@@ -115,6 +115,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 					paperScroller.startPanning(event);
 				}
 			});
+			paper.on('blank:pointerdblclick', selectionView.stopSelecting);
 		} else {
 			//Initiate panning when the user grabs the blank area of the paper.
 			paper.on('blank:pointerdown', paperScroller.startPanning);

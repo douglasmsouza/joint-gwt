@@ -4725,7 +4725,6 @@ joint.layout.DirectedGraph = {
 
 		if (opt.setTransformPositions) {
 			var transformPositions = function(cell) {
-				console.log(cell.attr(".name/text"));
 				if (!cell["positionedByParent"]) {
 					var connectedLinks = graph.getConnectedLinks(cell);
 					var children = [];
