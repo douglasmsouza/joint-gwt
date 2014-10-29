@@ -39,4 +39,8 @@ public final class JointPaperOptions extends JavaScriptObject {
 		this.allowSelection = allowSelection;
 	}-*/;
 
+	public native void setAutoResizePaper(boolean autoResizePaper)/*-{
+		this.autoResizePaper = autoResizePaper;
+	}-*/;
+
 }

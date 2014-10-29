@@ -92,7 +92,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		//Sets the scroller options
 		paperScroller.options = {
 			paper : paper,
-			autoResizePaper : true
+			autoResizePaper : paperOptions.autoResizePaper
 		};
 		paperScroller.$el.css({
 			width : paperOptions.scrollerWidth,
