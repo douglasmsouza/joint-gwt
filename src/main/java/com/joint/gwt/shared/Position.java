@@ -1,16 +1,21 @@
-package com.joint.gwt.client.util;
+package com.joint.gwt.shared;
+
+import java.io.Serializable;
 
 /**
  * This class represents a xy position relative to a view
  * 
  * @author Douglas Matheus de Souza
  */
-public class Position {
+public class Position implements Serializable {
 
 	private int x;
 	private int y;
 
-	private Position(int x, int y) {
+	protected Position() {
+	}
+
+	protected Position(int x, int y) {
 		super();
 		this.x = x;
 		this.y = y;

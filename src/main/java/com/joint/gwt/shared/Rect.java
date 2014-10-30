@@ -1,14 +1,19 @@
-package com.joint.gwt.client.util;
+package com.joint.gwt.shared;
+
+import java.io.Serializable;
 
 /**
  * This class represents a basic Rect
  * 
  * @author Douglas Matheus de Souza
  */
-public class Rect {
+public class Rect implements Serializable {
 
 	private float width;
 	private float height;
+
+	protected Rect() {
+	}
 
 	public Rect(float width, float height) {
 		super();

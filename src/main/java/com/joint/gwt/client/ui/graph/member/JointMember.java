@@ -7,8 +7,8 @@ import com.google.gwt.dom.client.Style.TextDecoration;
 import com.joint.gwt.client.constants.TextAnchor;
 import com.joint.gwt.client.ui.element.JointElementJS;
 import com.joint.gwt.client.ui.element.JointElementRect;
-import com.joint.gwt.client.util.Rect;
-import com.joint.gwt.client.util.RectCalculator;
+import com.joint.gwt.client.ui.graph.loader.JointGraphLoader;
+import com.joint.gwt.shared.Rect;
 import com.joint.gwt.shared.bean.JointBean;
 
 /**
@@ -24,7 +24,7 @@ public class JointMember<T extends JointBean<T>> extends JointElementRect {
 		this(bean, new Rect(width, height));
 	}
 
-	public JointMember(T bean, RectCalculator<T> rectCalculator) {
+	public JointMember(T bean, JointGraphLoader<T> rectCalculator) {
 		this(bean, rectCalculator.calculateRect(bean));
 	}
 
@@ -293,13 +293,21 @@ public class JointMember<T extends JointBean<T>> extends JointElementRect {
 		setHeight(rect.getHeight());
 	}
 
+	public native void setPosition(float x, float y) /*-{
+		var js = this.@com.joint.gwt.client.ui.graph.member.JointMember::getJS()();
+		js.set('position', {
+			x : x,
+			y : y
+		});
+	}-*/;
+
 	@Override
 	protected final native JointElementJS createJavaScriptObject()/*-{
 		var instance = this.@com.joint.gwt.client.ui.element.JointElementRect::getRect()();
 		return new $wnd.joint.shapes.org.Member({
 			size : {
-				width : instance.@com.joint.gwt.client.util.Rect::getWidth()(),
-				height : instance.@com.joint.gwt.client.util.Rect::getHeight()()
+				width : instance.@com.joint.gwt.shared.Rect::getWidth()(),
+				height : instance.@com.joint.gwt.shared.Rect::getHeight()()
 			},
 			attrs : {
 				'.card' : {

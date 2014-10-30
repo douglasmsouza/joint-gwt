@@ -1,6 +1,6 @@
 package com.joint.gwt.client.ui.element;
 
-import com.joint.gwt.client.util.Rect;
+import com.joint.gwt.shared.Rect;
 
 /**
  * A JointJS element represented by a Rect

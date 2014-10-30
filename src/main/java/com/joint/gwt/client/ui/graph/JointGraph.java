@@ -13,15 +13,15 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.joint.gwt.client.ui.element.JointElement;
 import com.joint.gwt.client.ui.element.view.JointElementView;
+import com.joint.gwt.client.ui.graph.loader.JointGraphLoader;
 import com.joint.gwt.client.ui.graph.member.JointMember;
 import com.joint.gwt.client.ui.graph.member.JointMemberListener;
 import com.joint.gwt.client.ui.graph.member.JointMemberListenerAdapter;
 import com.joint.gwt.client.ui.graph.paper.JointPaperListener;
 import com.joint.gwt.client.ui.graph.paper.JointPaperOptions;
-import com.joint.gwt.client.util.Point;
-import com.joint.gwt.client.util.Position;
-import com.joint.gwt.client.util.Rect;
-import com.joint.gwt.client.util.RectCalculator;
+import com.joint.gwt.shared.Point;
+import com.joint.gwt.shared.Position;
+import com.joint.gwt.shared.Rect;
 import com.joint.gwt.shared.bean.JointBean;
 
 /**
@@ -251,9 +251,9 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		var graphInstance = this.@com.joint.gwt.client.ui.graph.JointGraph::getInstance()();
 		if (@com.joint.gwt.client.ui.graph.JointGraph::isMember(Lcom/google/gwt/core/client/JavaScriptObject;)(model)) {
 			var javaMember = graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::getMemberFromJS(Lcom/google/gwt/core/client/JavaScriptObject;)(model);
-			var graphPosition = @com.joint.gwt.client.util.Position::create(II)(event.offsetX,event.offsetY);
-			var pagePosition = @com.joint.gwt.client.util.Position::create(II)(event.pageX,event.pageY);
-			graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::fireMemberEvent(Ljava/lang/String;Lcom/joint/gwt/client/ui/graph/member/JointMember;Lcom/joint/gwt/client/util/Position;Lcom/joint/gwt/client/util/Position;Lcom/joint/gwt/client/ui/graph/member/JointMemberListener;)(event.type,javaMember,graphPosition,pagePosition,listener);
+			var graphPosition = @com.joint.gwt.shared.Position::create(II)(event.offsetX,event.offsetY);
+			var pagePosition = @com.joint.gwt.shared.Position::create(II)(event.pageX,event.pageY);
+			graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::fireMemberEvent(Ljava/lang/String;Lcom/joint/gwt/client/ui/graph/member/JointMember;Lcom/joint/gwt/shared/Position;Lcom/joint/gwt/shared/Position;Lcom/joint/gwt/client/ui/graph/member/JointMemberListener;)(event.type,javaMember,graphPosition,pagePosition,listener);
 		}
 	}-*/;
 
@@ -354,9 +354,9 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 */
 	private native void firePaperBlankAreaEventJS(JavaScriptObject event, JointPaperListener<T> listener)/*-{
 		var graphInstance = this.@com.joint.gwt.client.ui.graph.JointGraph::getInstance()();
-		var graphPosition = @com.joint.gwt.client.util.Position::create(II)(event.offsetX,event.offsetY);
-		var pagePosition = @com.joint.gwt.client.util.Position::create(II)(event.pageX,event.pageY);
-		graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::firePaperBlankAreaEvent(Ljava/lang/String;Lcom/joint/gwt/client/util/Position;Lcom/joint/gwt/client/util/Position;Lcom/joint/gwt/client/ui/graph/paper/JointPaperListener;)(event.type,graphPosition,pagePosition,listener);
+		var graphPosition = @com.joint.gwt.shared.Position::create(II)(event.offsetX,event.offsetY);
+		var pagePosition = @com.joint.gwt.shared.Position::create(II)(event.pageX,event.pageY);
+		graphInstance.@com.joint.gwt.client.ui.graph.JointGraph::firePaperBlankAreaEvent(Ljava/lang/String;Lcom/joint/gwt/shared/Position;Lcom/joint/gwt/shared/Position;Lcom/joint/gwt/client/ui/graph/paper/JointPaperListener;)(event.type,graphPosition,pagePosition,listener);
 	}-*/;
 
 	/**
@@ -446,11 +446,11 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	}-*/;
 
 	/**
-	 * See {@link JointGraph#load(JointBean, RectCalculator, boolean)}
+	 * See {@link JointGraph#load(JointBean, JointGraphLoader, boolean)}
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public void load(T rootBean, RectCalculator<T> rectCalculator) {
+	public void load(T rootBean, JointGraphLoader<T> rectCalculator) {
 		load(rootBean, rectCalculator, true);
 	}
 
@@ -458,26 +458,26 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * Loads a graph based on the root member and its children
 	 * 
 	 * @param rootBean the root member
-	 * @param rectCalculator the rect calculator for width and height
-	 *            calculation of each member
+	 * @param jointGraphLoader a class to initialize the jointMembers
+	 *            before add to the graph
 	 * @param autoLayout if should automatic calculate the graph's layout
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public void load(T rootBean, RectCalculator<T> rectCalculator, boolean autoLayout) {
+	public void load(T rootBean, JointGraphLoader<T> jointGraphLoader, boolean autoLayout) {
 		/*Clear the graph*/
 		clear();
 		//
 		if (rootBean != null) {
 			/*Load the new members*/
-			load(rootBean, null, rectCalculator);
+			load(rootBean, null, jointGraphLoader);
 			//
 			if (autoLayout) {
 				/*Redraw the graph*/
 				updateLayoutJS();
-				/*Scroll the graph relative to the root member*/
-				scrollTo(rootMember);
 			}
+			/*Scroll the graph relative to the root member*/
+			scrollTo(rootMember);
 		}
 	}
 
@@ -486,18 +486,23 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	private void load(T member, JointMember<T> parentMemberJS, RectCalculator<T> rectCalculator) {
-		if (rectCalculator == null)
-			throw new IllegalArgumentException("The rectCalculator cannnot be null.");
+	private void load(T member, JointMember<T> parentMemberJS, JointGraphLoader<T> jointGraphLoader) {
+		if (jointGraphLoader == null)
+			throw new IllegalArgumentException("The jointGraphLoader cannnot be null.");
 		/*Calculates the element rect*/
-		Rect rect = rectCalculator.calculateRect(member);
+		Rect rect = jointGraphLoader.calculateRect(member);
 		/*Creates the js element*/
 		JointMember<T> memberJS = new JointMember<T>(member, rect);
+		/*Initilalize the memberJS*/
+		Point initialPosition = jointGraphLoader.getInitialPosition(memberJS);
+		if (initialPosition != null) {
+			memberJS.setPosition(initialPosition.getX(), initialPosition.getY());
+		}
 		/*Adds the element into the graph*/
 		addMember(memberJS, parentMemberJS, false, false);
 		/*Adds the element's children into the graph*/
 		for (T childBean : member.getChildren()) {
-			load(childBean, memberJS, rectCalculator);
+			load(childBean, memberJS, jointGraphLoader);
 		}
 	}
 
@@ -830,17 +835,19 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		var points = [];
 		//Searchs for the connection between the member and its parent 
 		var connectedLinks = graph.getConnectedLinks(memberJS);
-		for (var i = 0; i < connectedLinks.length; i++) {
-			var el = connectedLinks[i];
-			//When the member is the target, automatically the source is the parent
-			if (memberJS.id == el.get('target').id) {
-				var vertices = el.get('vertices');
-				for (var v = 0; v < vertices.length; v++) {
-					var vertice = vertices[v];
-					points[i] = @com.joint.gwt.client.util.Point::create(FF)(vertice.x, vertice.y);
+		if (connectedLinks) {
+			for (var i = 0; i < connectedLinks.length; i++) {
+				var el = connectedLinks[i];
+				//When the member is the target, automatically the source is the parent
+				if (memberJS.id == el.get('target').id) {
+					var vertices = el.get('vertices');
+					for (var v = 0; v < vertices.length; v++) {
+						var vertice = vertices[v];
+						points[i] = @com.joint.gwt.shared.Point::create(FF)(vertice.x, vertice.y);
+					}
+					//
+					break;
 				}
-				//
-				break;
 			}
 		}
 		//

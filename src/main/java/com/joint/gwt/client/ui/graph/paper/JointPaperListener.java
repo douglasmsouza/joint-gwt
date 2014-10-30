@@ -1,7 +1,7 @@
 package com.joint.gwt.client.ui.graph.paper;
 
 import com.joint.gwt.client.ui.graph.JointGraph;
-import com.joint.gwt.client.util.Position;
+import com.joint.gwt.shared.Position;
 import com.joint.gwt.shared.bean.JointBean;
 
 /**
