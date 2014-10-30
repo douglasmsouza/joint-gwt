@@ -835,19 +835,19 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		var points = [];
 		//Searchs for the connection between the member and its parent 
 		var connectedLinks = graph.getConnectedLinks(memberJS);
-		if (connectedLinks) {
-			for (var i = 0; i < connectedLinks.length; i++) {
-				var el = connectedLinks[i];
-				//When the member is the target, automatically the source is the parent
-				if (memberJS.id == el.get('target').id) {
-					var vertices = el.get('vertices');
+		for (var i = 0; i < connectedLinks.length; i++) {
+			var el = connectedLinks[i];
+			//When the member is the target, automatically the source is the parent
+			if (memberJS.id == el.get('target').id) {
+				var vertices = el.get('vertices');
+				if (vertices) {
 					for (var v = 0; v < vertices.length; v++) {
 						var vertice = vertices[v];
 						points[i] = @com.joint.gwt.shared.Point::create(FF)(vertice.x, vertice.y);
 					}
-					//
-					break;
 				}
+				//
+				break;
 			}
 		}
 		//
