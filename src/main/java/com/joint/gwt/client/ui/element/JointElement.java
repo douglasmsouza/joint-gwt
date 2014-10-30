@@ -14,7 +14,7 @@ public abstract class JointElement {
 
 	protected abstract JointElementJS createJavaScriptObject();
 
-	public int[] getXY() {
+	public float[] getXY() {
 		return js.getXY();
 	}
 

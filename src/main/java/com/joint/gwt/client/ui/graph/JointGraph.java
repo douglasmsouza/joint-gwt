@@ -18,6 +18,7 @@ import com.joint.gwt.client.ui.graph.member.JointMemberListener;
 import com.joint.gwt.client.ui.graph.member.JointMemberListenerAdapter;
 import com.joint.gwt.client.ui.graph.paper.JointPaperListener;
 import com.joint.gwt.client.ui.graph.paper.JointPaperOptions;
+import com.joint.gwt.client.util.Point;
 import com.joint.gwt.client.util.Position;
 import com.joint.gwt.client.util.Rect;
 import com.joint.gwt.client.util.RectCalculator;
@@ -510,7 +511,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * @author Douglas Matheus de Souza
 	 */
 	public void updateLayout(boolean preserveScrollPosition) {
-		int[] scrollPosition = preserveScrollPosition ? getScrollPosition() : null;
+		float[] scrollPosition = preserveScrollPosition ? getScrollPosition() : null;
 		//
 		updateLayoutJS();
 		//
@@ -702,7 +703,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public native void center(int x, int y)/*-{
+	public native void center(float x, float y)/*-{
 		var paperScrollerJS = this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS;
 		paperScrollerJS.center(x, y);
 	}-*/;
@@ -714,7 +715,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public void center(int[] xy) {
+	public void center(float[] xy) {
 		center(xy[0], xy[1]);
 	}
 
@@ -737,7 +738,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public native void scrollTo(int x, int y)/*-{
+	public native void scrollTo(float x, float y)/*-{
 		var paperScrollerJS = this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS;
 		paperScrollerJS.el.scrollLeft = x;
 		paperScrollerJS.el.scrollTop = y;
@@ -750,7 +751,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public void scrollTo(int[] xy) {
+	public void scrollTo(float[] xy) {
 		scrollTo(xy[0], xy[1]);
 	}
 
@@ -770,7 +771,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public native int[] getScrollPosition()/*-{
+	public native float[] getScrollPosition()/*-{
 		var paperScrollerJS = this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS;
 		return [paperScrollerJS.el.scrollLeft, paperScrollerJS.el.scrollTop];
 	}-*/;
@@ -816,5 +817,34 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		/*Sets the new color*/
 		member.setBackgroundColor(selectedColor, true);
 	}
+
+	/**
+	 * Return the existing points in the connection between a member and its
+	 * parent
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public native Point[] getConnectionVerticesRelativeToParent(JointMember<T> member) /*-{
+		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
+		var memberJS = member.@com.joint.gwt.client.ui.graph.member.JointMember::getJS()();
+		var points = [];
+		//Searchs for the connection between the member and its parent 
+		var connectedLinks = graph.getConnectedLinks(memberJS);
+		for (var i = 0; i < connectedLinks.length; i++) {
+			var el = connectedLinks[i];
+			//When the member is the target, automatically the source is the parent
+			if (memberJS.id == el.get('target').id) {
+				var vertices = el.get('vertices');
+				for (var v = 0; v < vertices.length; v++) {
+					var vertice = vertices[v];
+					points[i] = @com.joint.gwt.client.util.Point::create(FF)(vertice.x, vertice.y);
+				}
+				//
+				break;
+			}
+		}
+		//
+		return points;
+	}-*/;
 
 }

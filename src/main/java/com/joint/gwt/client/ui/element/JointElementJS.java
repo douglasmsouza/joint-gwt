@@ -80,7 +80,7 @@ public class JointElementJS extends JavaScriptObject {
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public final native int[] getXY()/*-{
+	public final native float[] getXY()/*-{
 		var box = this.getBBox();
 		return [box.x, box.y];
 	}-*/;
