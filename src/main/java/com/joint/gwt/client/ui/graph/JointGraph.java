@@ -3,6 +3,7 @@ package com.joint.gwt.client.ui.graph;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -13,6 +14,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.joint.gwt.client.ui.element.JointElement;
 import com.joint.gwt.client.ui.element.view.JointElementView;
+import com.joint.gwt.client.ui.graph.link.JointLink;
 import com.joint.gwt.client.ui.graph.loader.JointGraphLoader;
 import com.joint.gwt.client.ui.graph.member.JointMember;
 import com.joint.gwt.client.ui.graph.member.JointMemberListener;
@@ -383,24 +385,31 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		}
 	}
 
-	/**
-	 * See
-	 * {@link JointGraph#addMember(JointMember, JointMember, boolean, boolean)}
+/**
+	 * See {@link JointGraph#addMember(JointMember, JointMember, List, boolean, boolean)
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
 	public void addMember(JointMember<T> newMember, JointMember<T> parentMember) {
-		addMember(newMember, parentMember, true, true);
+		addMember(newMember, parentMember, null, true, true);
 	}
 
-	/**
-	 * See
-	 * {@link JointGraph#addMember(JointMember, JointMember, boolean, boolean)}
+/**
+	 * See {@link JointGraph#addMember(JointMember, JointMember, List, boolean, boolean)
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
 	public void addMember(JointMember<T> newMember, JointMember<T> parentMember, boolean autoLayout) {
-		addMember(newMember, parentMember, true, autoLayout);
+		addMember(newMember, parentMember, null, true, autoLayout);
+	}
+
+/**
+	 * See {@link JointGraph#addMember(JointMember, JointMember, List, boolean, boolean)
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public void addMember(JointMember<T> newMember, JointMember<T> parentMember, List<Point> linkVertices) {
+		addMember(newMember, parentMember, linkVertices, true, false);
 	}
 
 	/**
@@ -408,6 +417,8 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @param newMember the new member
 	 * @param parentMember parent member to link
+	 * @param linkVertices the existing points in the connection between the
+	 *            newMember member and the parentMember
 	 * @param associateParentAndChild true if should add the newMember to the
 	 *            parentMember's children list
 	 * @param autoLayout if should automatic calculate the graph's layout after
@@ -415,7 +426,8 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	private void addMember(JointMember<T> newMember, JointMember<T> parentMember, boolean associateParentAndChild, boolean autoLayout) {
+	private void addMember(JointMember<T> newMember, JointMember<T> parentMember, List<Point> linkVertices, boolean associateParentAndChild,
+			boolean autoLayout) {
 		// Sets the graph's root member
 		if (rootMember == null) {
 			this.rootMember = newMember;
@@ -427,32 +439,24 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		// Maps the java object instance by the JavaScriptObject
 		this.members.put(newMember.getJS(), newMember);
 		// Draw the member in the graph
-		addMemberJS(newMember, parentMember, autoLayout);
-	}
-
-	private native void addMemberJS(JointMember<T> newMember, JointMember<T> parentMember, boolean autoLayout)/*-{
-		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
-		var newMemberJS = newMember.@com.joint.gwt.client.ui.graph.member.JointMember::getJS()();
-		graph.addCell(newMemberJS);
-		//
+		addElementJS(newMember);
+		// Draw the link in the graph
 		if (parentMember != null) {
-			link = @com.joint.gwt.client.ui.graph.link.JointLink::createLink(Lcom/joint/gwt/client/ui/element/JointElement;Lcom/joint/gwt/client/ui/element/JointElement;)(parentMember,newMember);
-			graph.addCell(link);
+			JointLink<T> link = new JointLink<T>(parentMember, newMember);
+			link.setVertices(linkVertices);
+			addElementJS(link);
 		}
-		//
+		// Auto layout the graph
 		if (autoLayout) {
-			this.@com.joint.gwt.client.ui.graph.JointGraph::updateLayout(Z)(true);
+			updateLayout(true);
 		}
-	}-*/;
-
-	/**
-	 * See {@link JointGraph#load(JointBean, JointGraphLoader, boolean)}
-	 * 
-	 * @author Douglas Matheus de Souza
-	 */
-	public void load(T rootBean, JointGraphLoader<T> rectCalculator) {
-		load(rootBean, rectCalculator, true);
 	}
+
+	private native void addElementJS(JointElement element)/*-{
+		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
+		var elementJS = element.@com.joint.gwt.client.ui.element.JointElement::getJS()();
+		graph.addCell(elementJS);
+	}-*/;
 
 	/**
 	 * Loads a graph based on the root member and its children
@@ -464,7 +468,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public void load(T rootBean, JointGraphLoader<T> jointGraphLoader, boolean autoLayout) {
+	public void load(T rootBean, JointGraphLoader<T> jointGraphLoader) {
 		/*Clear the graph*/
 		clear();
 		//
@@ -472,12 +476,16 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 			/*Load the new members*/
 			load(rootBean, null, jointGraphLoader);
 			//
-			if (autoLayout) {
+			if (jointGraphLoader.isAutoLayout()) {
 				/*Redraw the graph*/
 				updateLayoutJS();
+				/*Scroll the graph relative to the root member or to the configured initial scroll position*/
+				if (jointGraphLoader.getInicialScrollPosition() != null) {
+					scrollTo(jointGraphLoader.getInicialScrollPosition());
+				} else {
+					scrollTo(rootMember);
+				}
 			}
-			/*Scroll the graph relative to the root member*/
-			scrollTo(rootMember);
 		}
 	}
 
@@ -487,19 +495,26 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * @author Douglas Matheus de Souza
 	 */
 	private void load(T member, JointMember<T> parentMemberJS, JointGraphLoader<T> jointGraphLoader) {
-		if (jointGraphLoader == null)
+		if (jointGraphLoader == null) {
 			throw new IllegalArgumentException("The jointGraphLoader cannnot be null.");
+		}
+		//
+		if (jointGraphLoader.getRectCalculator() == null) {
+			throw new IllegalArgumentException("The jointGraphLoader.getRectCalculator() cannnot return null.");
+		}
+		//
 		/*Calculates the element rect*/
-		Rect rect = jointGraphLoader.calculateRect(member);
+		Rect rect = jointGraphLoader.getRectCalculator().calculateRect(member);
 		/*Creates the js element*/
 		JointMember<T> memberJS = new JointMember<T>(member, rect);
 		/*Initilalize the memberJS*/
 		Point initialPosition = jointGraphLoader.getInitialPosition(memberJS);
+		List<Point> linkVertices = jointGraphLoader.getLinkVertices(memberJS);
 		if (initialPosition != null) {
 			memberJS.setPosition(initialPosition.getX(), initialPosition.getY());
 		}
 		/*Adds the element into the graph*/
-		addMember(memberJS, parentMemberJS, false, false);
+		addMember(memberJS, parentMemberJS, linkVertices, false, false);
 		/*Adds the element's children into the graph*/
 		for (T childBean : member.getChildren()) {
 			load(childBean, memberJS, jointGraphLoader);
@@ -547,8 +562,12 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	public void scale(float scaleValue) {
 		float newGraphScale = graphScale + scaleValue;
 		if (newGraphScale > 0) {
+			float[] scrollPosition = this.getScrollPosition();
+			//
 			this.graphScale = newGraphScale;
 			scaleJS(graphScale);
+			// Back the scroll to its original position before scale the graph
+			scrollTo(scrollPosition);
 		}
 	};
 
@@ -829,7 +848,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public native Point[] getConnectionVerticesRelativeToParent(JointMember<T> member) /*-{
+	public native Point[] getLinkVertices(JointMember<T> member) /*-{
 		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
 		var memberJS = member.@com.joint.gwt.client.ui.graph.member.JointMember::getJS()();
 		var points = [];

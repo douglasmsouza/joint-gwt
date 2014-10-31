@@ -15,7 +15,7 @@ public abstract class JointElement {
 	protected abstract JointElementJS createJavaScriptObject();
 
 	public float[] getXY() {
-		return js.getXY();
+		return getJS().getXY();
 	}
 
 	public JointElementJS getJS() {
@@ -24,6 +24,10 @@ public abstract class JointElement {
 		//
 		return js;
 	}
+
+	public final String getId() {
+		return getJS().getId();
+	};
 
 	public JointElement getInstance() {
 		return this;

@@ -84,4 +84,13 @@ public class JointElementJS extends JavaScriptObject {
 		var box = this.getBBox();
 		return [box.x, box.y];
 	}-*/;
+
+	/**
+	 * Returns the element ID attribute
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public final native String getId()/*-{
+		return this.id;
+	}-*/;
 }

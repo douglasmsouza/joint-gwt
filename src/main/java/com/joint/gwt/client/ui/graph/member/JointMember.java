@@ -7,7 +7,7 @@ import com.google.gwt.dom.client.Style.TextDecoration;
 import com.joint.gwt.client.constants.TextAnchor;
 import com.joint.gwt.client.ui.element.JointElementJS;
 import com.joint.gwt.client.ui.element.JointElementRect;
-import com.joint.gwt.client.ui.graph.loader.JointGraphLoader;
+import com.joint.gwt.client.util.RectCalculator;
 import com.joint.gwt.shared.Rect;
 import com.joint.gwt.shared.bean.JointBean;
 
@@ -24,7 +24,7 @@ public class JointMember<T extends JointBean<T>> extends JointElementRect {
 		this(bean, new Rect(width, height));
 	}
 
-	public JointMember(T bean, JointGraphLoader<T> rectCalculator) {
+	public JointMember(T bean, RectCalculator<T> rectCalculator) {
 		this(bean, rectCalculator.calculateRect(bean));
 	}
 
