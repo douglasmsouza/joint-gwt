@@ -14,7 +14,7 @@ import com.joint.gwt.shared.bean.JointBean;
  */
 public abstract class JointGraphLoader<T extends JointBean<T>> {
 
-	private RectCalculator<T> rectCalculator;
+	private RectCalculator<T> rectCalculator = createRectCalculator();
 
 	public RectCalculator<T> getRectCalculator() {
 		return rectCalculator;
