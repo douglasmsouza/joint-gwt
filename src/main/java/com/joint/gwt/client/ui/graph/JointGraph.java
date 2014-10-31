@@ -861,7 +861,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 				if (vertices) {
 					for (var v = 0; v < vertices.length; v++) {
 						var vertice = vertices[v];
-						points[i] = @com.joint.gwt.shared.Point::create(FF)(vertice.x, vertice.y);
+						points[v] = @com.joint.gwt.shared.Point::create(FF)(vertice.x, vertice.y);
 					}
 				}
 				//

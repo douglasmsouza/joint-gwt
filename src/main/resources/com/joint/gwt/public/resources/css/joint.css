@@ -55,25 +55,37 @@ true
 ]
 
 
+
+
 :not
 
+
  
+
 
 (
 .element
 
+
  
+
 
 )
 {
 cursor
 
 
+
+
 :
+
 
  
 
+
 crosshair
+
+
 
 
 ;
@@ -263,8 +275,20 @@ Do not allow adding new vertices: .connection-wrap { pointer-events: none; }
 	padding: 0px 5px 0px 5px;
 }
 
-.link-tools .tool-remove,.link-tools .tool-options,.marker-arrowhead {
-	display: none
+.link-tools .tool-options{
+	
+}
+
+.marker-arrowhead{
+	display: none;
+}
+
+.link-tools .tool-remove {
+	display: none;
+}
+
+.connection, .connection-wrap {
+	/* pointer-events: none; */
 }
 
 .card,.rank,.name,.connection-wrap,image {
@@ -277,8 +301,4 @@ Do not allow adding new vertices: .connection-wrap { pointer-events: none; }
 
 .paper-scroller svg {
 	background-color: white;
-}
-
-.connection, .connection-wrap {
-	pointer-events: none;
 }

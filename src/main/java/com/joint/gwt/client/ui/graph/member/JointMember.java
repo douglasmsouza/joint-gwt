@@ -8,6 +8,7 @@ import com.joint.gwt.client.constants.TextAnchor;
 import com.joint.gwt.client.ui.element.JointElementJS;
 import com.joint.gwt.client.ui.element.JointElementRect;
 import com.joint.gwt.client.util.RectCalculator;
+import com.joint.gwt.shared.Point;
 import com.joint.gwt.shared.Rect;
 import com.joint.gwt.shared.bean.JointBean;
 
@@ -299,6 +300,13 @@ public class JointMember<T extends JointBean<T>> extends JointElementRect {
 			x : x,
 			y : y
 		});
+	}-*/;
+
+	public native Point getPosition()/*-{
+		var js = this.@com.joint.gwt.client.ui.graph.member.JointMember::getJS()();
+		var x = js.get('position').x;
+		var y = js.get('position').y;
+		return @com.joint.gwt.shared.Point::create(FF)(x,y);
 	}-*/;
 
 	@Override
