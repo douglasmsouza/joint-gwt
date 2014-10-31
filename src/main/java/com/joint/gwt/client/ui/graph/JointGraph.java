@@ -475,16 +475,15 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		if (rootBean != null) {
 			/*Load the new members*/
 			load(rootBean, null, jointGraphLoader);
-			//
+			/*Redraw the graph*/
 			if (jointGraphLoader.isAutoLayout()) {
-				/*Redraw the graph*/
 				updateLayoutJS();
-				/*Scroll the graph relative to the root member or to the configured initial scroll position*/
-				if (jointGraphLoader.getInicialScrollPosition() != null) {
-					scrollTo(jointGraphLoader.getInicialScrollPosition());
-				} else {
-					scrollTo(rootMember);
-				}
+			}
+			/*Scroll the graph relative to the root member or to the configured initial scroll position*/
+			if (jointGraphLoader.getInicialScrollPosition() != null) {
+				scrollTo(jointGraphLoader.getInicialScrollPosition());
+			} else {
+				scrollTo(rootMember);
 			}
 		}
 	}
