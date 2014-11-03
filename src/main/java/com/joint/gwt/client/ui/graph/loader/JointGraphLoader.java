@@ -39,7 +39,7 @@ public abstract class JointGraphLoader<T extends JointBean<T>> {
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public float[] getInicialScrollPosition() {
+	public float[] getInitialScrollPosition() {
 		return null;
 	}
 

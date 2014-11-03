@@ -15,12 +15,12 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.joint.gwt.client.ui.element.JointElement;
 import com.joint.gwt.client.ui.element.view.JointElementView;
 import com.joint.gwt.client.ui.graph.link.JointLink;
+import com.joint.gwt.client.ui.graph.link.JointLinkRouter;
 import com.joint.gwt.client.ui.graph.loader.JointGraphLoader;
 import com.joint.gwt.client.ui.graph.member.JointMember;
 import com.joint.gwt.client.ui.graph.member.JointMemberListener;
 import com.joint.gwt.client.ui.graph.member.JointMemberListenerAdapter;
 import com.joint.gwt.client.ui.graph.paper.JointPaperListener;
-import com.joint.gwt.client.ui.graph.paper.JointPaperOptions;
 import com.joint.gwt.shared.Point;
 import com.joint.gwt.shared.Position;
 import com.joint.gwt.shared.Rect;
@@ -45,12 +45,14 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 
 	private float graphScale = 1;
 	private String selectedColor = "#3498DB";
+	private boolean allowChildrenAlignVertically = true;
+	private JointLinkRouter defaultLinkRouter;
 
-	public JointGraph(final JointPaperOptions paperOptions) {
-		this(paperOptions, null);
+	public JointGraph(final JointGraphOptions graphOptions) {
+		this(graphOptions, null);
 	}
 
-	public JointGraph(final JointPaperOptions paperOptions, final T rootMember) {
+	public JointGraph(final JointGraphOptions graphOptions, final T rootMember) {
 		SimplePanel contentPanel = new SimplePanel();
 		contentPanel.setWidth("100%");
 		contentPanel.setHeight("100%");
@@ -58,7 +60,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		//
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			public void execute() {
-				initGraphJS(getElement().getId(), paperOptions, rootMember);
+				initGraphJS(getElement().getId(), graphOptions, rootMember);
 				//
 				addListener(new JointMemberListenerAdapter<T>() {
 					public void onClick(JointGraph<T> graph, JointMember<T> member, Position graphPosition, Position pagePosition) {
@@ -79,30 +81,30 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * <b>containerId</b>
 	 * 
 	 * @param containerId DOM id of the graph container
-	 * @param paperOptions options to create the graph's viewport
+	 * @param graphOptions options to create the graph's viewport
 	 * @param rootMember the root member of the graph
 	 * @author Douglas Matheus de Souza
 	 */
-	private native void initGraphJS(String containerId, JointPaperOptions paperOptions, T rootMember)/*-{
+	private native void initGraphJS(String containerId, JointGraphOptions graphOptions, T rootMember)/*-{
 		//Creates the graph
 		var graph = new $wnd.joint.dia.Graph;
 		//Creates the paperScroller
 		var paperScroller = new $wnd.joint.ui.PaperScroller;
 		//Creates the paper
-		paperOptions["model"] = graph;
-		paperOptions["el"] = paperScroller.el;
-		var paper = new $wnd.joint.dia.Paper(paperOptions);
+		graphOptions["model"] = graph;
+		graphOptions["el"] = paperScroller.el;
+		var paper = new $wnd.joint.dia.Paper(graphOptions);
 		//Sets the scroller options
 		paperScroller.options = {
 			paper : paper,
-			autoResizePaper : paperOptions.autoResizePaper
+			autoResizePaper : graphOptions.autoResizePaper
 		};
 		paperScroller.$el.css({
-			width : paperOptions.scrollerWidth,
-			height : paperOptions.scrollerHeight
+			width : graphOptions.scrollerWidth,
+			height : graphOptions.scrollerHeight
 		});
 		//
-		if (paperOptions.allowSelection) {
+		if (graphOptions.allowSelection) {
 			//Initialize the selection view
 			var selection = new $wnd.Backbone.Collection;
 			var selectionView = new $wnd.joint.ui.SelectionView({
@@ -442,13 +444,17 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		addElementJS(newMember);
 		// Draw the link in the graph
 		if (parentMember != null) {
-			JointLink<T> link = new JointLink<T>(parentMember, newMember);
+			JointLink<T> link = new JointLink<T>(parentMember, newMember, defaultLinkRouter);
 			link.setVertices(linkVertices);
 			addElementJS(link);
 		}
 		// Auto layout the graph
 		if (autoLayout) {
 			updateLayout(true);
+		} else {
+			// Brings the new member to front. If autoLayout, the auto layout
+			// will bring the elements to front automatically
+			newMember.toFront();
 		}
 	}
 
@@ -480,8 +486,8 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 				updateLayoutJS();
 			}
 			/*Scroll the graph relative to the root member or to the configured initial scroll position*/
-			if (jointGraphLoader.getInicialScrollPosition() != null) {
-				scrollTo(jointGraphLoader.getInicialScrollPosition());
+			if (jointGraphLoader.getInitialScrollPosition() != null) {
+				scrollTo(jointGraphLoader.getInitialScrollPosition());
 			} else {
 				scrollTo(rootMember);
 			}
@@ -546,9 +552,10 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 */
 	private native void updateLayoutJS()/*-{
 		var graph = this.@com.joint.gwt.client.ui.graph.JointGraph::graphJS;
+		var thisInstance = this.@com.joint.gwt.client.ui.graph.JointGraph::getInstance()();
 		$wnd.joint.layout.DirectedGraph.layout(graph, {
 			setLinkVertices : true,
-			setTransformPositions : true,
+			allowChildrenAlignVertically : thisInstance.@com.joint.gwt.client.ui.graph.JointGraph::allowChildrenAlignVertically,
 			nodeSep : 50
 		});
 	}-*/;
@@ -872,4 +879,21 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		return points;
 	}-*/;
 
+	/**
+	 * True if can positioning the children vertically in the graph
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public void setAllowChildrenAlignVertically(boolean allowChildrenAlignVertically) {
+		this.allowChildrenAlignVertically = allowChildrenAlignVertically;
+	}
+
+	/**
+	 * Sets the default link router for autolayout graph
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public void setDefaultLinkRouter(JointLinkRouter defaultLinkRouter) {
+		this.defaultLinkRouter = defaultLinkRouter;
+	}
 }

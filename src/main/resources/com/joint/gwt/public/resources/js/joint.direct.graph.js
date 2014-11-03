@@ -4720,10 +4720,12 @@ joint.layout.DirectedGraph = {
 					x : value.x - value.width / 2,
 					y : value.y - value.height / 2
 				});
+				//
+				cell.toFront();
 			}
 		});
 
-		if (opt.setTransformPositions) {
+		if (opt.allowChildrenAlignVertically) {
 			var transformPositions = function(cell) {
 				if (!cell["positionedByParent"]) {
 					var connectedLinks = graph.getConnectedLinks(cell);
@@ -4789,7 +4791,7 @@ joint.layout.DirectedGraph = {
 			opt.setVertices = function(link, points) {
 				var targetElement = graph.getCell(link.attributes.target);
 				if (targetElement["positionedByParent"]) {
-					var sourceElement = graph.getCell(link.attributes.source);
+					/*var sourceElement = graph.getCell(link.attributes.source);
 					var point1 = {
 						x : sourceElement.attributes.position.x + 20,
 						y : sourceElement.attributes.position.y + sourceElement.attributes.size.height / 2
@@ -4798,7 +4800,13 @@ joint.layout.DirectedGraph = {
 						x : targetElement.attributes.position.x - 20,
 						y : targetElement.attributes.position.y + targetElement.attributes.size.height / 2
 					};
-					link.set('vertices', [point1, point2]);
+					link.set('vertices', [point1, point2]);*/
+					//
+					var point = {
+						x : targetElement.attributes.position.x - 20,
+						y : targetElement.attributes.position.y + targetElement.attributes.size.height / 2
+					};
+					link.set('vertices', [point]);
 				} else {
 					link.set('vertices', points);
 				}

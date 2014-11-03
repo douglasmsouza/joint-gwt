@@ -15,10 +15,14 @@ import com.joint.gwt.shared.bean.JointBean;
  */
 public final class JointLink<T extends JointBean<T>> extends JointElement {
 
-	public JointLink(JointMember<T> source, JointMember<T> target) {
+	public JointLink(JointMember<T> source, JointMember<T> target, JointLinkRouter router) {
 		super();
 		setSourceTarget(source, "source");
 		setSourceTarget(target, "target");
+		//
+		if (router != null) {
+			setRouter(router);
+		}
 	}
 
 	private native void setSourceTarget(JointMember<T> member, String sourceOrTarget)/*-{
@@ -27,6 +31,17 @@ public final class JointLink<T extends JointBean<T>> extends JointElement {
 		thisJS.set(sourceOrTarget, {
 			id : memberId
 		});
+	}-*/;
+
+	public native void setRouter(JointLinkRouter router)/*-{
+		var thisJS = this.@com.joint.gwt.client.ui.graph.link.JointLink::getJS()();
+		if (router != null) {
+			thisJS.set('router', {
+				name : router.@com.joint.gwt.client.ui.graph.link.JointLinkRouter::getRouter()()
+			});
+		} else {
+			thisJS.attributes.router = undefined;
+		}
 	}-*/;
 
 	public void setStrokeColor(String color) {

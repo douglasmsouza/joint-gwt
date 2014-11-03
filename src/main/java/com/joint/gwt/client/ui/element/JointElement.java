@@ -33,4 +33,14 @@ public abstract class JointElement {
 		return this;
 	}
 
+	public native void toFront() /*-{
+		var thisJS = this.@com.joint.gwt.client.ui.element.JointElement::getJS()();
+		thisJS.toFront();
+	}-*/;
+
+	public native void toBack() /*-{
+		var thisJS = this.@com.joint.gwt.client.ui.element.JointElement::getJS()();
+		thisJS.toBack();
+	}-*/;
+
 }

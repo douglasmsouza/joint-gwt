@@ -1,14 +1,15 @@
-package com.joint.gwt.client.ui.graph.paper;
+package com.joint.gwt.client.ui.graph;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.joint.gwt.client.ui.graph.link.JointLinkRouter;
 
-public final class JointPaperOptions extends JavaScriptObject {
+public final class JointGraphOptions extends JavaScriptObject {
 
-	public static native JointPaperOptions createOptions()/*-{
+	public static native JointGraphOptions createOptions()/*-{
 		return {};
 	}-*/;
 
-	protected JointPaperOptions() {
+	protected JointGraphOptions() {
 	}
 
 	public native void setWidth(Object width)/*-{
