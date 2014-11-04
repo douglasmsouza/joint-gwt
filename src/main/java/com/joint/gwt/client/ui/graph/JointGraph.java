@@ -10,6 +10,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.BrowserEvents;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.joint.gwt.client.ui.element.JointElement;
@@ -44,6 +45,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	private Map<JavaScriptObject, JointMember<T>> members = new HashMap<JavaScriptObject, JointMember<T>>();
 
 	private float graphScale = 1;
+	private float zoomScale = 1;
 	private String selectedColor = "#3498DB";
 	private boolean allowChildrenAlignVertically = true;
 	private JointLinkRouter defaultLinkRouter;
@@ -88,17 +90,17 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	private native void initGraphJS(String containerId, JointGraphOptions graphOptions, T rootMember)/*-{
 		//Creates the graph
 		var graph = new $wnd.joint.dia.Graph;
-		//Creates the paperScroller
-		var paperScroller = new $wnd.joint.ui.PaperScroller;
 		//Creates the paper
 		graphOptions["model"] = graph;
-		graphOptions["el"] = paperScroller.el;
+		//graphOptions["el"] = paperScroller.el;
 		var paper = new $wnd.joint.dia.Paper(graphOptions);
+		//Creates the paperScroller
+		var paperScroller = new $wnd.joint.ui.PaperScroller({
+			autoResizePaper : graphOptions.autoResizePaper,
+			paper : paper
+		});
 		//Sets the scroller options
-		paperScroller.options = {
-			paper : paper,
-			autoResizePaper : graphOptions.autoResizePaper
-		};
+		//paperScroller.options.paper = paper;
 		paperScroller.$el.css({
 			width : graphOptions.scrollerWidth,
 			height : graphOptions.scrollerHeight
@@ -110,7 +112,10 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 			var selectionView = new $wnd.joint.ui.SelectionView({
 				paper : paper,
 				graph : graph,
-				model : selection
+				model : selection,
+				boxContent : function() {
+					return "";
+				}
 			});
 			paper.on('blank:pointerdown', function(event) {
 				if (event.ctrlKey) {
@@ -486,8 +491,9 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 				updateLayoutJS();
 			}
 			/*Scroll the graph relative to the root member or to the configured initial scroll position*/
-			if (jointGraphLoader.getInitialScrollPosition() != null) {
-				scrollTo(jointGraphLoader.getInitialScrollPosition());
+			float[] initialScrollPosition = jointGraphLoader.getInitialScrollPosition(rootMember);
+			if (initialScrollPosition != null) {
+				scrollTo(initialScrollPosition);
 			} else {
 				scrollTo(rootMember);
 			}
@@ -577,37 +583,64 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		}
 	};
 
+	/**
+	 * Scale the graph by its real size
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public void scaleRealSize() {
+		zoom(1 - graphScale);
+	}
+
 	private native void scaleJS(float scaleValue)/*-{
 		var paper = this.@com.joint.gwt.client.ui.graph.JointGraph::paperJS;
 		paper.scale(scaleValue, scaleValue);
 	}-*/;
 
 	/**
-	 * Scale the graph by 0.1
+	 * Zoom the graph by a float between 0 and 1 that representes the percentage
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public void zoom(float zoomValue) {
+		float newZoomScale = zoomScale + zoomValue;
+		if (newZoomScale > 0) {
+			this.zoomScale = newZoomScale;
+			zoomJS(zoomValue);
+		}
+	}
+
+	/**
+	 * Zoom the graph by 0.1 (10%)
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
 	public void zoomIn() {
-		scale(0.1f);
+		zoom(0.1f);
 	}
 
 	/**
-	 * Scale the graph by -0.1
+	 * Zoom the graph by -0.1 (-10%)
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
 	public void zoomOut() {
-		scale(-0.1f);
+		zoom(-0.1f);
 	}
 
 	/**
-	 * Scale the graph by its real size
+	 * Zoom the graph by its real size
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public void zoomReal() {
-		scale(1 - graphScale);
+	public void zoomRealSize() {
+		zoom(1 - zoomScale);
 	}
+
+	private native void zoomJS(float zoom)/*-{
+		var paperScroller = this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS;
+		paperScroller.zoom(zoom);
+	}-*/;
 
 	/**
 	 * 
@@ -615,9 +648,9 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public native void fitToContent()/*-{
-		var paper = this.@com.joint.gwt.client.ui.graph.JointGraph::paperJS;
-		paper.fitToContent();
+	public native void zoomToFit()/*-{
+		var paperScroller = this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS;
+		paperScroller.zoomToFit();
 	}-*/;
 
 	/**
@@ -629,7 +662,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		this.rootMember = null;
 		this.selectedMember = null;
 		this.members.clear();
-		zoomReal();
+		zoomRealSize();
 		clearJS();
 	}
 
@@ -757,7 +790,24 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * @author Douglas Matheus de Souza
 	 */
 	public void center(JointElement relativeTo) {
-		center(relativeTo.getXY());
+		scrollTo(getCenterPosition(relativeTo));
+	}
+
+	/**
+	 * Returns the center position relative to the element
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public float[] getCenterPosition(JointElement relativeTo) {
+		float[] xy = relativeTo.getXY();
+		//
+		float x = xy[0] - (Window.getClientWidth() / 2);
+		xy[0] = (x < 0) ? 0 : x;
+		//
+		/*float y = xy[1] - (Window.getClientHeight() / 2);
+		xy[1] = (y < 0) ? 0 : y;*/
+		//
+		return xy;
 	}
 
 	/**
@@ -809,7 +859,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	/**
 	 * Sets the background color for the selected member
 	 * 
-	 * @author Douglas Matheus de Souza em 23/10/2014
+	 * @author Douglas Matheus de Souza
 	 */
 	public void setSelectedColor(String selectedColor) {
 		this.selectedColor = selectedColor;

@@ -6,9 +6,6 @@
 	<stylesheet src="resources/css/joint.css" />
 	<stylesheet src="resources/css/joint.ui.paper.scroller.css" />
 	<stylesheet src="resources/css/joint.ui.selectionView.css" />
-	<script src="resources/js/joint.min.js" />
-	<script src="resources/js/joint.direct.graph.js" />
-	<script src="resources/js/joint.shapes.org.min.js" />
-	<script src="resources/js/joint.ui.paper.scroller.js" />
-	<script src="resources/js/joint.ui.selectionView.js" />
+	<script src="resources/js/joint.all.min.js" />
+	<script src="resources/js/joint.DirectedGraph.transform.js" />
 </module>

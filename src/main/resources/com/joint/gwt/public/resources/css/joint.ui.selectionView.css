@@ -14,7 +14,7 @@ file, You can obtain one at http://jointjs.com/license/jointjs_plus_v1.txt
 .selection {
    position: absolute;
    background-color: red;
-   border: 2px dotted black;
+   border: 2px solid black;
    opacity: .5;
 }
 
