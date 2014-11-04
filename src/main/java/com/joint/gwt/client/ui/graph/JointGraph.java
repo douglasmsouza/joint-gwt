@@ -574,12 +574,8 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	public void scale(float scaleValue) {
 		float newGraphScale = graphScale + scaleValue;
 		if (newGraphScale > 0) {
-			float[] scrollPosition = this.getScrollPosition();
-			//
 			this.graphScale = newGraphScale;
 			scaleJS(graphScale);
-			// Back the scroll to its original position before scale the graph
-			scrollTo(scrollPosition);
 		}
 	};
 
