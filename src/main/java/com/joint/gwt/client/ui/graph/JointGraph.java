@@ -753,6 +753,16 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
+	public native void centerContent()/*-{
+		var paperScrollerJS = this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS;
+		paperScrollerJS.centerContent();
+	}-*/;
+
+	/**
+	 * Center the graph content
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
 	public native void center()/*-{
 		var paperScrollerJS = this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS;
 		paperScrollerJS.center();
