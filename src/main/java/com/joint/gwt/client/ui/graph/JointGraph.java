@@ -26,6 +26,7 @@ import com.joint.gwt.shared.Point;
 import com.joint.gwt.shared.Position;
 import com.joint.gwt.shared.Rect;
 import com.joint.gwt.shared.bean.JointBean;
+import com.joint.gwt.shared.interfaces.HasJointRootBean;
 
 /**
  * An implementation of joint.dia.Graph of JointJS library
@@ -36,6 +37,9 @@ import com.joint.gwt.shared.bean.JointBean;
  */
 public class JointGraph<T extends JointBean<T>> extends Composite implements Iterable<JointMember<T>> {
 
+	private static final float DEFAULT_SCALE_TRANSFORM = 0.1f;
+	private static final int ORIGINAL_GRAPH_SCALE = 1;
+	//
 	private JavaScriptObject graphJS;
 	private JavaScriptObject paperJS;
 	private JavaScriptObject paperScrollerJS;
@@ -44,8 +48,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	private JointMember<T> selectedMember;
 	private Map<JavaScriptObject, JointMember<T>> members = new HashMap<JavaScriptObject, JointMember<T>>();
 
-	private float graphScale = 1;
-	private float zoomScale = 1;
+	private float currentScale = ORIGINAL_GRAPH_SCALE;
 	private String selectedColor = "#3498DB";
 	private boolean allowChildrenAlignVertically = true;
 	private JointLinkRouter defaultLinkRouter;
@@ -91,8 +94,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		//Creates the graph
 		var graph = new $wnd.joint.dia.Graph;
 		//Creates the paper
-		graphOptions["model"] = graph;
-		//graphOptions["el"] = paperScroller.el;
+		graphOptions.model = graph;
 		var paper = new $wnd.joint.dia.Paper(graphOptions);
 		//Creates the paperScroller
 		var paperScroller = new $wnd.joint.ui.PaperScroller({
@@ -100,7 +102,6 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 			paper : paper
 		});
 		//Sets the scroller options
-		//paperScroller.options.paper = paper;
 		paperScroller.$el.css({
 			width : graphOptions.scrollerWidth,
 			height : graphOptions.scrollerHeight
@@ -118,8 +119,8 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 				}
 			});
 			paper.on('blank:pointerdown', function(event) {
-				if (event.ctrlKey) {
-					//Select the content if CTRL key is pressed
+				if (event.ctrlKey || event.shiftKey || event.altKey) {
+					//Select the content if CTRL, SHIFT or ALT key is pressed
 					selectionView.startSelecting(event);
 				} else {
 					paperScroller.startPanning(event);
@@ -472,10 +473,23 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	/**
 	 * Loads a graph based on the root member and its children
 	 * 
+	 * @param hasJointRootBean the class that contains the root member
+	 * @param jointGraphLoader a class to initialize the jointMembers
+	 *            before add to the graph
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public void load(HasJointRootBean<T> hasJointRootBean, JointGraphLoader<T> jointGraphLoader) {
+		T rootBean = (hasJointRootBean != null) ? hasJointRootBean.getRootBean() : null;
+		load(rootBean, jointGraphLoader);
+	}
+
+	/**
+	 * Loads a graph based on the root member and its children
+	 * 
 	 * @param rootBean the root member
 	 * @param jointGraphLoader a class to initialize the jointMembers
 	 *            before add to the graph
-	 * @param autoLayout if should automatic calculate the graph's layout
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
@@ -572,21 +586,18 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * @author Douglas Matheus de Souza
 	 */
 	public void scale(float scaleValue) {
-		float newGraphScale = graphScale + scaleValue;
+		float newGraphScale = currentScale + scaleValue;
 		if (newGraphScale > 0) {
-			this.graphScale = newGraphScale;
-			scaleJS(graphScale);
+			float[] scrollPosition = this.getScrollPosition();
+			//
+			this.currentScale = newGraphScale;
+			scaleJS(currentScale);
+			//
+			float scrollX = scrollPosition[0];
+			float scrollY = scrollPosition[1];
+			scrollTo(scrollX + (scrollX * scaleValue), scrollY + (scrollY * scaleValue));
 		}
 	};
-
-	/**
-	 * Scale the graph by its real size
-	 * 
-	 * @author Douglas Matheus de Souza
-	 */
-	public void scaleRealSize() {
-		zoom(1 - graphScale);
-	}
 
 	private native void scaleJS(float scaleValue)/*-{
 		var paper = this.@com.joint.gwt.client.ui.graph.JointGraph::paperJS;
@@ -594,25 +605,12 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	}-*/;
 
 	/**
-	 * Zoom the graph by a float between 0 and 1 that representes the percentage
-	 * 
-	 * @author Douglas Matheus de Souza
-	 */
-	public void zoom(float zoomValue) {
-		float newZoomScale = zoomScale + zoomValue;
-		if (newZoomScale > 0) {
-			this.zoomScale = newZoomScale;
-			zoomJS(zoomValue);
-		}
-	}
-
-	/**
 	 * Zoom the graph by 0.1 (10%)
 	 * 
 	 * @author Douglas Matheus de Souza
 	 */
 	public void zoomIn() {
-		zoom(0.1f);
+		scale(DEFAULT_SCALE_TRANSFORM);
 	}
 
 	/**
@@ -621,7 +619,7 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * @author Douglas Matheus de Souza
 	 */
 	public void zoomOut() {
-		zoom(-0.1f);
+		scale(-DEFAULT_SCALE_TRANSFORM);
 	}
 
 	/**
@@ -630,9 +628,10 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * @author Douglas Matheus de Souza
 	 */
 	public void zoomRealSize() {
-		zoom(1 - zoomScale);
+		scale(ORIGINAL_GRAPH_SCALE - currentScale);
 	}
 
+	@Deprecated
 	private native void zoomJS(float zoom)/*-{
 		var paperScroller = this.@com.joint.gwt.client.ui.graph.JointGraph::paperScrollerJS;
 		paperScroller.zoom(zoom);
@@ -796,22 +795,46 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 	 * @author Douglas Matheus de Souza
 	 */
 	public void center(JointElement relativeTo) {
-		scrollTo(getCenterPosition(relativeTo));
+		scrollTo(getCenterPosition(relativeTo, true, true));
+	}
+
+	/**
+	 * Center the graph content relative to the xy position of the element
+	 * 
+	 * @param relativeTo the element that contains the xy position
+	 * @param centerX if should centralize relative to the X position of the
+	 *            element
+	 * @param centerY if should centralize relative to the Y position of the
+	 *            element
+	 * 
+	 * @author Douglas Matheus de Souza
+	 */
+	public void center(JointElement relativeTo, boolean centerX, boolean centerY) {
+		scrollTo(getCenterPosition(relativeTo, centerX, centerY));
 	}
 
 	/**
 	 * Returns the center position relative to the element
 	 * 
+	 * @param centerX if should return the centered position relative to the
+	 *            element's X position
+	 * @param centerX if should return the centered position relative to the
+	 *            element's Y position
+	 * 
 	 * @author Douglas Matheus de Souza
 	 */
-	public float[] getCenterPosition(JointElement relativeTo) {
+	public float[] getCenterPosition(JointElement relativeTo, boolean centerX, boolean centerY) {
 		float[] xy = relativeTo.getXY();
 		//
-		float x = xy[0] - (Window.getClientWidth() / 2);
-		xy[0] = (x < 0) ? 0 : x;
+		if (centerX) {
+			float x = xy[0] - (Window.getClientWidth() / 2);
+			xy[0] = ((x < 0) ? 0 : x) * currentScale;
+		}
 		//
-		/*float y = xy[1] - (Window.getClientHeight() / 2);
-		xy[1] = (y < 0) ? 0 : y;*/
+		if (centerY) {
+			float y = xy[1] - (Window.getClientHeight() / 2);
+			xy[1] = ((y < 0) ? 0 : y) * currentScale;
+		}
 		//
 		return xy;
 	}
