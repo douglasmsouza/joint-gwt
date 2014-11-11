@@ -171,7 +171,6 @@ public class JointGraph<T extends JointBean<T>> extends Composite implements Ite
 		var paperJS = this.@com.joint.gwt.client.ui.graph.JointGraph::paperJS;
 		paperJS.options.elementView = $wnd.joint.dia.ElementView
 				.extend({
-					template : elementView.@com.joint.gwt.client.ui.element.view.JointElementView::createTemplate()(),
 					initialize : function() {
 						//Calls the original function to initialize the element						
 						$wnd.joint.dia.ElementView.prototype.initialize.apply(this, arguments);
