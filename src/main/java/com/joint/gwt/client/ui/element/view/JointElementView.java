@@ -17,13 +17,4 @@ public class JointElementView<T extends JointElement> {
 	public void initialize(T element) {
 	}
 
-	/**
-	 * Execute when a element is added to a view
-	 * 
-	 * @author Douglas Matheus de Souza
-	 */
-	public String createTemplate() {
-		return null;
-	}
-
 }
